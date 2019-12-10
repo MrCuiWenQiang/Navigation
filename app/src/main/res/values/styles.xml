@@ -1,0 +1,35 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="QMUI.Compat">
+    <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="search_ll_style">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:background">@drawable/search_backage</item>
+        <item name="android:layout_marginTop">12dp</item>
+    </style>
+
+    <style name="search_tv">
+        <item name="android:textColor">@color/bi_black</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="line">
+        <item name="android:background">@color/frenchgrey</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.3dp</item>
+    </style>
+
+    <style name="bt_route">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+</resources>

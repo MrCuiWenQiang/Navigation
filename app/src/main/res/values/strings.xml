@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Navigation</string>
+
+    <string name="nai_hint">请驾驶车辆到规划路线</string>
+</resources>
