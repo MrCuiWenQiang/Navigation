@@ -1,16 +1,19 @@
 package com.zt.navigation.oldlyg.view;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.esri.android.map.GraphicsLayer;
@@ -29,15 +32,22 @@ import java.util.ArrayList;
 
 import cn.faker.repaymodel.mvp.BaseMVPAcivity;
 import cn.faker.repaymodel.util.ToastUtility;
+import cn.faker.repaymodel.zxing.activity.CaptureActivity;
 
 public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> implements MapContract.View, View.OnClickListener {
     private final int PERMISSIONS_CODE_LOCATION = 200;
+    private final int REQUEST_CODE_SCAN = 300;
 
     private MapView mMapView;
     private TextView tv_search;
 
     private GraphicsLayer mGraphicsLayer;
     private GraphicsLayer hiddenSegmentsLayer;
+
+    private LinearLayout ll_setting, ll_help, ll_listen;
+    private LinearLayout ll_cat, ll_scan, ll_task_help;
+    private LinearLayout ll_add, ll_subtract;
+    private LinearLayout ll_local;
 
 
     private boolean isOne = false;//第一次进入 定位缩放自身
@@ -58,6 +68,15 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         changStatusIconCollor(false);
         mMapView = (MapView) findViewById(R.id.mapview);
         tv_search = findViewById(R.id.tv_search);
+        ll_add = findViewById(R.id.ll_add);
+        ll_subtract = findViewById(R.id.ll_subtract);
+        ll_local = findViewById(R.id.ll_local);
+        ll_setting = findViewById(R.id.ll_setting);
+        ll_help = findViewById(R.id.ll_help);
+        ll_listen = findViewById(R.id.ll_listen);
+        ll_cat = findViewById(R.id.ll_cat);
+        ll_scan = findViewById(R.id.ll_scan);
+        ll_task_help = findViewById(R.id.ll_task_help);
     }
 
 
@@ -66,7 +85,6 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         initMap();
         initPermission();
     }
-
 
 
     private void initMap() {
@@ -102,6 +120,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
                 Manifest.permission.ACCESS_WIFI_STATE,
                 Manifest.permission.CHANGE_WIFI_STATE,
                 Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.CAMERA
         };
 
         ArrayList<String> toApplyList = new ArrayList<String>();
@@ -129,6 +148,15 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     protected void initListener() {
         super.initListener();
         tv_search.setOnClickListener(this);
+        ll_add.setOnClickListener(this);
+        ll_subtract.setOnClickListener(this);
+        ll_local.setOnClickListener(this);
+        ll_setting.setOnClickListener(this);
+        ll_help.setOnClickListener(this);
+        ll_listen.setOnClickListener(this);
+        ll_cat.setOnClickListener(this);
+        ll_scan.setOnClickListener(this);
+        ll_task_help.setOnClickListener(this);
     }
 
 
@@ -178,6 +206,54 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
             case R.id.tv_search: {
                 toAcitvity(SearchActivity.class);
                 break;
+            }
+            case R.id.ll_add: {
+                mMapView.zoomin();
+                break;
+            }
+            case R.id.ll_local: {
+                if (MyApplication.startPoint != null) {
+                    mMapView.zoomTo(MyApplication.startPoint, 10);
+                } else {
+                    ToastUtility.showToast("请检查定位开关和权限是否打开!");
+                }
+                break;
+            }
+            case R.id.ll_subtract: {
+                mMapView.zoomout();
+                break;
+            }
+            case R.id.ll_setting: {
+                break;
+            }
+            case R.id.ll_help: {
+                break;
+            }
+            case R.id.ll_listen: {
+                break;
+            }
+            case R.id.ll_cat: {
+                break;
+            }
+            case R.id.ll_scan: {
+                Intent intent = new Intent(getContext(),CaptureActivity.class);
+                startActivityForResult(intent,REQUEST_CODE_SCAN);
+                break;
+            }
+            case R.id.ll_task_help: {
+                break;
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case REQUEST_CODE_SCAN:{ //扫描结果
+                if (resultCode==CaptureActivity.CAPTURE_SCAN_CODE){
+                    String code = data.getStringExtra(CaptureActivity.CAPTURE_SCAN_RESULT);
+                }
             }
         }
     }

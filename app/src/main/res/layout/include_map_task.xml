@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_task"
+    android:layout_width="wrap_content"
+    android:layout_height="50dp"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_marginBottom="20dp"
+    android:background="@drawable/task_left_right_backage"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/ll_cat"
+        style="@style/task_group"
+        android:orientation="vertical">
+
+        <ImageView
+            style="@style/task_image"
+            android:src="@mipmap/car" />
+
+        <TextView
+            style="@style/task_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="派车单" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:background="@drawable/task_scan_oval"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@mipmap/scan" />
+
+        <TextView
+            android:layout_marginTop="2dp"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="扫码" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_task_help"
+        style="@style/task_group"
+        android:orientation="vertical">
+
+        <ImageView
+            style="@style/task_image"
+            android:src="@mipmap/usehelp" />
+
+        <TextView
+            style="@style/task_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="使用帮助" />
+    </LinearLayout>
+</LinearLayout>

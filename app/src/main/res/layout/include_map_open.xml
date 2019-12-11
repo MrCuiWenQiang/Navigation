@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/tv_search"
+    android:layout_alignParentRight="true"
+    android:layout_marginTop="20dp"
+    android:layout_marginRight="10dp"
+    android:background="@drawable/open_backage"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_setting"
+        style="@style/open_group"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/setting" />
+
+        <TextView
+            style="@style/open_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="设置" />
+    </LinearLayout>
+
+    <View style="@style/open_line" />
+
+    <LinearLayout
+        android:id="@+id/ll_help"
+        style="@style/open_group"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/help" />
+
+        <TextView
+            style="@style/open_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="帮助" />
+    </LinearLayout>
+
+    <View style="@style/open_line" />
+
+    <LinearLayout
+        android:id="@+id/ll_listen"
+        style="@style/open_group"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/listen" />
+
+        <TextView
+            style="@style/open_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="反馈" />
+    </LinearLayout>
+</LinearLayout>

@@ -2,28 +2,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
+    android:clipChildren="false"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <com.esri.android.map.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </com.esri.android.map.MapView>
+        android:layout_height="match_parent"></com.esri.android.map.MapView>
+
     <TextView
         android:id="@+id/tv_search"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:hint="搜索地点"
         android:layout_marginTop="12dp"
+        android:layout_marginRight="25dp"
+        android:background="@drawable/search_backage"
         android:drawableLeft="@mipmap/search"
         android:gravity="center_vertical"
-        android:background="@drawable/search_backage"
-        android:layout_height="wrap_content"
-        />
+        android:hint="搜索地点" />
+
+    <include layout="@layout/include_map_open" />
+
+    <include layout="@layout/include_map_task" />
+    <include layout="@layout/include_map_level" />
+
+    <LinearLayout
+        android:id="@+id/ll_local"
+        android:background="@drawable/open_click_select"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="15dp"
+        android:padding="3dp"
+        android:layout_above="@id/ll_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:src="@mipmap/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
 </RelativeLayout>
