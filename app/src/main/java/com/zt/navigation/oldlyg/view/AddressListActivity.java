@@ -36,6 +36,8 @@ public class AddressListActivity extends BaseMVPAcivity<AddressListContract.View
 
     @Override
     protected void initContentView() {
+        setBackBackground(R.mipmap.fanhui_black);
+        setTitle("搜索结果");
         rv_list = findViewById(R.id.rv_list);
         rv_list.setLayoutManager(new LinearLayoutManager(getContext()));
         bootomAddressAdapter = new BootomAddressAdapter();
@@ -44,8 +46,7 @@ public class AddressListActivity extends BaseMVPAcivity<AddressListContract.View
 
     @Override
     public void initData(Bundle savedInstanceState) {
-        setBackBackground(R.mipmap.fanhui_black);
-        setTitle("搜索结果");
+
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("bundle");
         List<String> names = bundle.getStringArrayList(INTENT_KEY_NAME);
