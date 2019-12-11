@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
+import cn.faker.repaymodel.util.FileWUtil;
 import cn.faker.repaymodel.util.LogUtil;
 import cn.faker.repaymodel.util.proxy.ThreadPoolProxyFactory;
 
@@ -30,6 +31,7 @@ public class DBThreadHelper {
                 try {
                     callback.t = callback.jobContent();
                 } catch (Exception e) {
+                    FileWUtil.setAppendFile(e);
                     e.printStackTrace();
                     String sOut = "";
                     StackTraceElement[] trace = e.getStackTrace();

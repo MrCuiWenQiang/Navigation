@@ -18,6 +18,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import cn.faker.repaymodel.mvp.BaseMVPPresenter;
+import cn.faker.repaymodel.util.FileWUtil;
 import cn.faker.repaymodel.util.db.DBThreadHelper;
 
 public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.View> implements NavigationContract.Presenter {
@@ -128,6 +129,9 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
                         sb.append(",距离"+str);
                         sb.append("米");
                     }
+                    // TODO: 2019/12/10 记录器
+                    FileWUtil.setAppendFile(sb.toString());
+
                     getView().navigation_success(curRoute,sb.toString());
                 }
             }

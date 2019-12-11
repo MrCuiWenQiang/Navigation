@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.LocationDisplayManager;
@@ -73,10 +74,16 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
     protected void initContentView() {
         isShowBackButton(false);
         isShowToolView(false);
+        changStatusIconCollor(false);
 
         mMapView = findViewById(R.id.mapview);
     }
 
+    @Override
+    protected void initWindow() {
+        super.initWindow();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
 
     @Override
     public void initData(Bundle savedInstanceState) {
