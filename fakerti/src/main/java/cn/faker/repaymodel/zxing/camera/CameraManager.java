@@ -206,4 +206,8 @@ public class CameraManager {
 		}
 		return null;
 	}
+
+	public Camera getCamera() {
+		return camera;
+	}
 }

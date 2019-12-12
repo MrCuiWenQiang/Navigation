@@ -23,11 +23,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -78,6 +80,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     private boolean isHasSurface = false;
+    private boolean isopent = false;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -91,6 +94,25 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         scanContainer = (RelativeLayout) findViewById(R.id.capture_container);
         scanCropView = (RelativeLayout) findViewById(R.id.capture_crop_view);
         scanLine = (ImageView) findViewById(R.id.capture_scan_line);
+
+        findViewById(R.id.tv_zm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isopent) {
+                    Camera camera = cameraManager.getCamera();
+                    Camera.Parameters params = camera.getParameters();
+                    params.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                    camera.setParameters(params);
+                    camera.startPreview(); // 开始亮灯
+                    isopent = true;
+                } else {
+        /*            cameraManager.startPreview(); // 关掉亮灯
+//                    camera.release(); // 关掉照相机
+                    isopent = false;*/
+                }
+
+            }
+        });
 
         inactivityTimer = new InactivityTimer(this);
         beepManager = new BeepManager(this);
