@@ -46,6 +46,7 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
     public void initData(Bundle savedInstanceState) {
         setBackBackground(R.mipmap.fanhui_black);
         setTitle("设置中心");
+        changStatusIconCollor(false);
 
         boolean cattype = AppSettingUtil.getCatType();
         boolean maptype = AppSettingUtil.getMapType();

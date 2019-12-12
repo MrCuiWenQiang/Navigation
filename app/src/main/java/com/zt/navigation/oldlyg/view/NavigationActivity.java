@@ -250,6 +250,11 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
         bdtts.speak(msg);
     }
 
+    @Override
+    public void navigation_arrive(double surplus) {
+
+    }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

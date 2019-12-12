@@ -11,6 +11,7 @@ public class NavigationContract {
 
         void navigation_fail(String msg);
         void navigation_success(Route route, String msg);
+        void navigation_arrive(double surplus);
     }
 
     public interface Presenter {

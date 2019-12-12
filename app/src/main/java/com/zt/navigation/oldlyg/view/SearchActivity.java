@@ -56,6 +56,8 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
     @Override
     protected void initContentView() {
         isShowToolView(false);
+        changStatusIconCollor(false);
+
         mEdTxt = findViewById(R.id.ed_txt);
         mTvquery = findViewById(R.id.tv_query);
         mRvHistory = findViewById(R.id.rv_history);

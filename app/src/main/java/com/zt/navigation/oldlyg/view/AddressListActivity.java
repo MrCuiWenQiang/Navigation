@@ -36,6 +36,7 @@ public class AddressListActivity extends BaseMVPAcivity<AddressListContract.View
 
     @Override
     protected void initContentView() {
+        changStatusIconCollor(false);
         setBackBackground(R.mipmap.fanhui_black);
         setTitle("搜索结果");
         rv_list = findViewById(R.id.rv_list);

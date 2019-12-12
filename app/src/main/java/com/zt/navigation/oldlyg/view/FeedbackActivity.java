@@ -22,6 +22,7 @@ public class FeedbackActivity extends BaseToolBarActivity {
 
     @Override
     public void initData(Bundle savedInstanceState) {
+        changStatusIconCollor(false);
         setBackBackground(R.mipmap.fanhui_black);
         setTitle("意见反馈");
     }
