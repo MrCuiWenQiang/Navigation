@@ -77,4 +77,13 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_marginTop">1dp</item>
     </style>
+
+    <style name="basedialog">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="bt_up" parent="basedialog">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/bt_update</item>
+    </style>
 </resources>

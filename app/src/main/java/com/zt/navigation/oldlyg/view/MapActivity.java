@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -20,6 +19,7 @@ import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.LocationDisplayManager;
 import com.esri.android.map.MapView;
 import com.esri.android.map.ags.ArcGISDynamicMapServiceLayer;
+import com.esri.android.map.event.OnSingleTapListener;
 import com.esri.android.map.event.OnStatusChangedListener;
 import com.esri.core.geometry.Point;
 import com.zt.navigation.oldlyg.MyApplication;
@@ -48,6 +48,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     private LinearLayout ll_cat, ll_scan, ll_task_help;
     private LinearLayout ll_add, ll_subtract;
     private LinearLayout ll_local;
+    private LinearLayout ll_task;
 
 
     private boolean isOne = false;//第一次进入 定位缩放自身
@@ -77,6 +78,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         ll_cat = findViewById(R.id.ll_cat);
         ll_scan = findViewById(R.id.ll_scan);
         ll_task_help = findViewById(R.id.ll_task_help);
+        ll_task = findViewById(R.id.ll_task);
     }
 
 
@@ -157,6 +159,13 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         ll_cat.setOnClickListener(this);
         ll_scan.setOnClickListener(this);
         ll_task_help.setOnClickListener(this);
+
+        mMapView.setOnSingleTapListener(new OnSingleTapListener() {
+            @Override
+            public void onSingleTap(float v, float v1) {
+
+            }
+        });
     }
 
 
@@ -224,20 +233,22 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
                 break;
             }
             case R.id.ll_setting: {
+                toAcitvity(SettingActivity.class);
                 break;
             }
             case R.id.ll_help: {
                 break;
             }
             case R.id.ll_listen: {
+                toAcitvity(FeedbackActivity.class);
                 break;
             }
             case R.id.ll_cat: {
                 break;
             }
             case R.id.ll_scan: {
-                Intent intent = new Intent(getContext(),CaptureActivity.class);
-                startActivityForResult(intent,REQUEST_CODE_SCAN);
+                Intent intent = new Intent(getContext(), CaptureActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_SCAN);
                 break;
             }
             case R.id.ll_task_help: {
@@ -249,9 +260,9 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
-            case REQUEST_CODE_SCAN:{ //扫描结果
-                if (resultCode==CaptureActivity.CAPTURE_SCAN_CODE){
+        switch (requestCode) {
+            case REQUEST_CODE_SCAN: { //扫描结果
+                if (resultCode == CaptureActivity.CAPTURE_SCAN_CODE) {
                     String code = data.getStringExtra(CaptureActivity.CAPTURE_SCAN_RESULT);
                 }
             }

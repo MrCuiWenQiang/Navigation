@@ -53,16 +53,17 @@ public abstract class BaseActivity extends BaseManagerActivity implements BasicA
     }
 
 
-
     /**
      * 在此方法内设置控件监听
      */
     protected void initListener() {
 
     }
+
     protected void initData() {
 
     }
+
     protected Context getContext() {
         return this;
     }
@@ -78,10 +79,14 @@ public abstract class BaseActivity extends BaseManagerActivity implements BasicA
         startActivity(intent);
     }
 
-    protected void showListDialog(String[] items, DialogInterface.OnClickListener listener) {
-        new QMUIDialog.CheckableDialogBuilder(getContext())
+    protected void showListDialog(String title, String[] items, DialogInterface.OnClickListener listener) {
+        new QMUIDialog.CheckableDialogBuilder(getContext()).setTitle(title)
                 .addItems(items, listener)
                 .show();
+    }
+
+    protected void showListDialog(String[] items, DialogInterface.OnClickListener listener) {
+        showListDialog(null, items, listener);
     }
 
     protected void showDialog(String title, String msg) {
@@ -135,15 +140,16 @@ public abstract class BaseActivity extends BaseManagerActivity implements BasicA
     }
 
     protected String getValue(EditText text) {
-        if (text==null) return  null;
+        if (text == null) return null;
         if (TextUtils.isEmpty(text.getText())) {
             return null;
         } else {
             return text.getText().toString();
         }
     }
+
     protected int getTAGtoInt(View view) {
-        if (view.getTag()==null) {
+        if (view.getTag() == null) {
             return -1;
         } else {
             return (int) view.getTag();
@@ -151,7 +157,7 @@ public abstract class BaseActivity extends BaseManagerActivity implements BasicA
     }
 
     protected long getTAGtoLong(View view) {
-        if (view.getTag()==null) {
+        if (view.getTag() == null) {
             return -1;
         } else {
             return (long) view.getTag();
@@ -159,19 +165,21 @@ public abstract class BaseActivity extends BaseManagerActivity implements BasicA
     }
 
     protected int getTAGtoINT(View view) {
-        if (view.getTag()==null) {
+        if (view.getTag() == null) {
             return -1;
         } else {
             return (int) view.getTag();
         }
     }
+
     protected String getTAG(View view) {
-        if (view.getTag()==null) {
+        if (view.getTag() == null) {
             return null;
         } else {
             return (String) view.getTag();
         }
     }
+
     protected String getValue(CharSequence text) {
         if (TextUtils.isEmpty(text)) {
             return null;
@@ -179,12 +187,14 @@ public abstract class BaseActivity extends BaseManagerActivity implements BasicA
             return text.toString();
         }
     }
-    protected String getValue(TextView tv){
-        if (tv!=null){
+
+    protected String getValue(TextView tv) {
+        if (tv != null) {
             return getValue(tv.getText());
         }
         return null;
     }
+
     protected String getValue(Object text) {
         if (text == null || !(text instanceof String)) {
             return null;

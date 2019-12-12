@@ -48,6 +48,8 @@
         <activity android:name=".view.SearchActivity"/>
         <activity android:name=".view.AddressListActivity"/>
         <activity android:name=".view.NavigationActivity"/>
+        <activity android:name=".view.SettingActivity"/>
+        <activity android:name=".view.FeedbackActivity"/>
     </application>
 
 </manifest>
