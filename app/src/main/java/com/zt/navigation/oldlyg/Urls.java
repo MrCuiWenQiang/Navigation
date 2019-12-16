@@ -14,4 +14,9 @@ public class Urls {
 //    public static final String mapNaviUrl =  baseUrl+"/arcgis/rest/services/path/NAServer/路径";//在线算路服务
 //    public static final String mapNaviUrl ="http://192.168.1.13:6080/arcgis/rest/services/path/NAServer/路径";//JN
     public static final String mapNaviUrl ="http://119.3.165.194:6080/arcgis/rest/services/path/NAServer/路径";//JN
+
+
+    private static final String URL = "";
+    public static final String CARLIST = URL+"";
+    public static final String CARINFO = URL+"";
 }

@@ -63,6 +63,8 @@
         <activity android:name=".view.NavigationActivity" />
         <activity android:name=".view.SettingActivity" />
         <activity android:name=".view.FeedbackActivity" />
+        <activity android:name=".view.CarListActivity" />
+        <activity android:name=".view.CarInfoActivity" />
     </application>
 
 </manifest>

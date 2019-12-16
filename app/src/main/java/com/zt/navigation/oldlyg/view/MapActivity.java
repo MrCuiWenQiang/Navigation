@@ -244,6 +244,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
                 break;
             }
             case R.id.ll_cat: {
+                toAcitvity(CarListActivity.class);
                 break;
             }
             case R.id.ll_scan: {

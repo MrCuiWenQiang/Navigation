@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/base_item_gg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/base_item_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="委托号:" />
+
+        <TextView
+            android:id="@+id/tv_taskno"
+            style="@style/item_tt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="委托号" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/base_item_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="作业类型:" />
+
+        <TextView
+            android:id="@+id/tv_operatetype"
+            style="@style/item_tt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="作业类型" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/base_item_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间:" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            style="@style/item_tt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间" />
+    </LinearLayout>
+
+</LinearLayout>
