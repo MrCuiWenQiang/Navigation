@@ -19,4 +19,5 @@ public class Urls {
     private static final String URL = "";
     public static final String CARLIST = URL+"";
     public static final String CARINFO = URL+"";
+    public static final String FEEDBACK = URL+"";
 }

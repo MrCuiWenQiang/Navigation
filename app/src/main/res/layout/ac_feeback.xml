@@ -17,6 +17,7 @@
         android:paddingBottom="8dp">
 
         <EditText
+            android:id="@+id/et_content"
             android:background="@drawable/ed_feeback"
             android:textSize="15sp"
             android:layout_width="match_parent"
@@ -25,6 +26,7 @@
             android:hint="请输入您的宝贵意见,我们会认真倾听,及时改进" />
 
         <Button
+            android:id="@+id/bt_sumbit"
             style="@style/bt_up"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
