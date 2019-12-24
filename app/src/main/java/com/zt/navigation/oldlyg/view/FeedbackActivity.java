@@ -10,6 +10,7 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.zt.navigation.oldlyg.R;
 import com.zt.navigation.oldlyg.Urls;
+import com.zt.navigation.oldlyg.util.TokenManager;
 
 import java.util.HashMap;
 
@@ -65,6 +66,8 @@ public class FeedbackActivity extends BaseToolBarActivity {
         HashMap map = new HashMap<String, String>();
 //        map.put("userId", userId);
         map.put("info", content);
+        map.put("token", TokenManager.token);
+        map.put("userId", TokenManager.userId);
         HttpHelper.get(Urls.FEEDBACK, map, new HttpResponseCallback() {
             @Override
             public void onSuccess(String data) {

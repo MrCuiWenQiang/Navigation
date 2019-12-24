@@ -16,8 +16,9 @@ public class Urls {
     public static final String mapNaviUrl ="http://119.3.165.194:6080/arcgis/rest/services/path/NAServer/路径";//JN
 
 
-    private static final String URL = "";
+    private static final String URL = "http://www.boea.cn/DhApi/api";
     public static final String CARLIST = URL+"";
     public static final String CARINFO = URL+"";
-    public static final String FEEDBACK = URL+"";
+    public static final String FEEDBACK = URL+"/Idea";
+    public static final String LOGIN = URL+"/Logoin";
 }

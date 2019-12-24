@@ -7,7 +7,7 @@ package cn.faker.repaymodel.net.okhttp3;
  */
 public  class BaseResultBean {
     private int code;//状态码
-    private String msg;
+    private String message;
     private String data;//数据
 
     public int getCode() {
@@ -18,15 +18,14 @@ public  class BaseResultBean {
         this.code = code;
     }
 
-    public String getMsg() {
-        return msg;
+
+    public String getMessage() {
+        return message;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setMessage(String message) {
+        this.message = message;
     }
-
-
 
     public String getData() {
         return data;

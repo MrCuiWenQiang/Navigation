@@ -19,6 +19,7 @@ import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.LocationDisplayManager;
 import com.esri.android.map.MapView;
 import com.esri.android.map.ags.ArcGISDynamicMapServiceLayer;
+import com.esri.android.map.ags.ArcGISLocalTiledLayer;
 import com.esri.android.map.event.OnSingleTapListener;
 import com.esri.android.map.event.OnStatusChangedListener;
 import com.esri.core.geometry.Point;
@@ -27,6 +28,7 @@ import com.zt.navigation.oldlyg.R;
 import com.zt.navigation.oldlyg.Urls;
 import com.zt.navigation.oldlyg.contract.MapContract;
 import com.zt.navigation.oldlyg.presenter.MapPresenter;
+import com.zt.navigation.oldlyg.util.AppSettingUtil;
 
 import java.util.ArrayList;
 
@@ -90,8 +92,13 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
 
 
     private void initMap() {
-        ArcGISDynamicMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.mapUrl);
-        mMapView.addLayer(arcGISTiledMapServiceLayer);
+        if (AppSettingUtil.getMapType()){//地图类型暂时未动态切换
+            ArcGISLocalTiledLayer arcGISLocalTiledLayer = new ArcGISLocalTiledLayer("file://"+mPresenter.mapFilePath);
+            mMapView.addLayer(arcGISLocalTiledLayer);
+        }else {
+            ArcGISDynamicMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.mapUrl);
+            mMapView.addLayer(arcGISTiledMapServiceLayer);
+        }
         mGraphicsLayer = new GraphicsLayer();
         mMapView.addLayer(mGraphicsLayer);
         hiddenSegmentsLayer = new GraphicsLayer();
@@ -135,6 +142,8 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         String[] tmpList = new String[toApplyList.size()];
         if (!toApplyList.isEmpty()) {
             ActivityCompat.requestPermissions(this, toApplyList.toArray(tmpList), 123);
+        }else {
+            mPresenter.mapFile(getContext());
         }
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -281,6 +290,13 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
                     ToastUtility.showToast("未开启定位权限,请手动到设置去开启权限");
                 }
                 break;
+            case 123://刚才的识别码
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mPresenter.mapFile(getContext());
+                } else {
+                    ToastUtility.showToast("未开启定位权限,请手动到设置去开启权限");
+                }
+                break;
             default:
                 break;
         }
@@ -310,4 +326,14 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     }
 
 
+    @Override
+    public void showStartMapFile(String name) {
+        showLoading();
+    }
+
+    @Override
+    public void showEndMapFile(String name) {
+        dimiss();
+        showDialog(name);
+    }
 }

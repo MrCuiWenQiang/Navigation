@@ -75,26 +75,6 @@ public abstract class HttpResponseCallback extends BasicCallback {
 
             result = response.body().string();
             if (result != null) {
-                //关闭RSA解密
-             /*   if (!result.startsWith("{")) {
-                    result = result.substring(1,result.length()-1);
-                    StringBuilder json = new StringBuilder();
-                    result = result.replaceAll(" ", "+");
-                    if (!TextUtils.isEmpty(result)) {
-                        String[] contents = result.split("\\|");
-                        for (int k = 0; k < contents.length; k++) {
-                            String value = contents[k];
-                            try {
-                                value = new String(RSAUtils.decryptByPublicKey(Base64.decode(value), RSAKeys.publicClientKey),"UTF-8");
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            json.append(value);
-                        }
-                        result = json.toString();
-                    }
-
-                }*/
                 if (result != null) {
                     LogUtil.e("test-data", result);
                     final BaseResultBean baseResultBean = JsonUtil.convertJsonToObject(result, BaseResultBean.class);
@@ -105,7 +85,7 @@ public abstract class HttpResponseCallback extends BasicCallback {
                             public void run() {
                                 if (baseResultBean.getCode()==200) {
                                     onSuccess(baseResultBean.getData());
-                                    onMessage(baseResultBean.getMsg());
+                                    onMessage(baseResultBean.getMessage());
                                 } else {
                                     //关闭错误拦截
                            /*         if (onFailedAll!=null){
@@ -116,9 +96,9 @@ public abstract class HttpResponseCallback extends BasicCallback {
                                         onFailed(baseResultBean.getCode(), baseResultBean.getMsg());
                                     }*/
                                     if (onFailedAll!=null){
-                                        onFailedAll.onFailed(baseResultBean.getCode(), baseResultBean.getMsg());
+                                        onFailedAll.onFailed(baseResultBean.getCode(), baseResultBean.getMessage());
                                     }
-                                    onFailed(baseResultBean.getCode(), baseResultBean.getMsg());
+                                    onFailed(baseResultBean.getCode(), baseResultBean.getMessage());
                                 }
                             }
                         });
