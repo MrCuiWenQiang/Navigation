@@ -67,7 +67,7 @@ public class FeedbackActivity extends BaseToolBarActivity {
 //        map.put("userId", userId);
         map.put("info", content);
         map.put("token", TokenManager.token);
-        map.put("userId", TokenManager.userId);
+        map.put("userId", TokenManager.getUserId());
         HttpHelper.get(Urls.FEEDBACK, map, new HttpResponseCallback() {
             @Override
             public void onSuccess(String data) {

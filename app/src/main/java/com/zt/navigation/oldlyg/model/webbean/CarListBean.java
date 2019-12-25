@@ -3,17 +3,19 @@ package com.zt.navigation.oldlyg.model.webbean;
 import java.util.Date;
 
 public class CarListBean {
-    private String id;//派车单ID
+    private int ID;//派车单ID
     private String Taskno;//委托号
     private String OPERATETYPE;//作业类型
-    private Date time;//码头放行时间
+    private String VEHICLE;//车辆
+    private String DEPARTMENT;
+    private Date AUDITTIME;//审核时间
 
-    public String getId() {
-        return id;
+    public int getID() {
+        return ID;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public String getTaskno() {
@@ -32,11 +34,27 @@ public class CarListBean {
         this.OPERATETYPE = OPERATETYPE;
     }
 
-    public Date getTime() {
-        return time;
+    public String getVEHICLE() {
+        return VEHICLE;
     }
 
-    public void setTime(Date time) {
-        this.time = time;
+    public void setVEHICLE(String VEHICLE) {
+        this.VEHICLE = VEHICLE;
+    }
+
+    public Date getAUDITTIME() {
+        return AUDITTIME;
+    }
+
+    public void setAUDITTIME(Date AUDITTIME) {
+        this.AUDITTIME = AUDITTIME;
+    }
+
+    public String getDEPARTMENT() {
+        return DEPARTMENT;
+    }
+
+    public void setDEPARTMENT(String DEPARTMENT) {
+        this.DEPARTMENT = DEPARTMENT;
     }
 }

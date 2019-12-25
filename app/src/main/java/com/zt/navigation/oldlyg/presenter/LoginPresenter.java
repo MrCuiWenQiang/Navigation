@@ -46,10 +46,11 @@ public class LoginPresenter extends BaseMVPPresenter<LoginContract.View> impleme
                 List<LoginBean> loginBeans = JsonUtil.fromList(data, LoginBean.class);
                 if (loginBeans.size() > 0) {
                     LoginBean bean = loginBeans.get(0);
-                    TokenManager.userId = bean.getUSERID();
                     getView().login_Success("登录成功");
                     PreferencesUtility.setPreferencesField(CARNO, carNo);
                     PreferencesUtility.setPreferencesField(CARHEAD, carHead);
+                    PreferencesUtility.setPreferencesField(CARHEAD, carHead);
+                    TokenManager.saveValue(bean);
                 } else {
                     onFailed(-1, "登录失败:后台数据未返回成功");
                 }

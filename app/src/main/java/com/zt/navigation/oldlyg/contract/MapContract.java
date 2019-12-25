@@ -17,6 +17,7 @@ public class MapContract {
 
     public interface Presenter {
         void mapFile(Context context);
+        void updateLocation(double lan,double lon);
     }
 
     public interface Model {

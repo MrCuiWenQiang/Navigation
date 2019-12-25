@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import cn.faker.repaymodel.R;
@@ -27,6 +28,7 @@ public abstract class BaseToolBarActivity extends BaseActivity {
     protected TextView toolbar_tv_title;
     protected View v_title_d;
     protected ImageView backicon;
+    protected LinearLayout ll_title;
 
     public static final int SUCCESSCODE = 200;
 
@@ -39,8 +41,15 @@ public abstract class BaseToolBarActivity extends BaseActivity {
         toolbar_tv_title = (TextView) findViewById(R.id.toolbar_tv_title);
         v_title_d = findViewById(R.id.v_title_d);
         backicon = (ImageView) findViewById(R.id.backicon);
+        ll_title =  findViewById(R.id.ll_title);
 
         backicon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backOnClickListener();
+            }
+        });
+        ll_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 backOnClickListener();

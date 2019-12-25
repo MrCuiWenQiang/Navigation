@@ -120,7 +120,7 @@ public class HttpHelper {
 
     public static Call getPostCall(String path, Object object) {
         String json = JsonUtil.convertObjectToJson(object);
-        byte[] data = null;
+//        byte[] data = null;
       /*  try {
             data = RSAUtils.encryptByPublicKey(json.getBytes("utf-8"), RSAKeys.publicClientKey);
             String result = Base64.encode(data);

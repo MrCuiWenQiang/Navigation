@@ -16,11 +16,11 @@ import cn.faker.repaymodel.net.okhttp3.callback.HttpResponseCallback;
 public class CarListPresenter extends BaseMVPPresenter<CarListContract.View> implements CarListContract.Presenter {
 
     @Override
-    public void loadData(String token, String userId, String userName) {
+    public void loadData(String token, String userId, String userType) {
         HashMap map = new HashMap<String, String>();
         map.put("token", token);
         map.put("userId", userId);
-        map.put("userName", userName);
+        map.put("userType", userType);
         HttpHelper.get(Urls.CARLIST, map, new HttpResponseCallback() {
             @Override
             public void onSuccess(String data) {

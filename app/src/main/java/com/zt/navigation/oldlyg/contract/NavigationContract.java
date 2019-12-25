@@ -18,6 +18,8 @@ public class NavigationContract {
         void queryDirections(Point start, Point end, String stopName);
 
         void navigation(Point start, Point end,String stopName);
+
+        void updateLocation(double lan,double lon);
     }
 
     public interface Model {

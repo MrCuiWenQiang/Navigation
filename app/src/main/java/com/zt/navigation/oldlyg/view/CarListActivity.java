@@ -6,15 +6,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zt.navigation.oldlyg.contract.CarListContract;
 import com.zt.navigation.oldlyg.model.webbean.CarListBean;
 import com.zt.navigation.oldlyg.presenter.CarListPresenter;
 
 import cn.faker.repaymodel.mvp.BaseMVPAcivity;
+import cn.faker.repaymodel.util.SpaceItemDecoration;
+import cn.faker.repaymodel.util.SpacesItemDecoration;
 import cn.faker.repaymodel.util.ToastUtility;
 import cn.faker.repaymodel.widget.view.BaseRecycleView;
 
 import com.zt.navigation.oldlyg.R;
+import com.zt.navigation.oldlyg.util.TokenManager;
 import com.zt.navigation.oldlyg.view.adapter.CarListAdapter;
 
 import java.util.List;
@@ -26,6 +31,7 @@ public class CarListActivity extends BaseMVPAcivity<CarListContract.View, CarLis
 
     private RecyclerView rv_list;
     private CarListAdapter carListAdapter;
+    private RefreshLayout mRefreshLayout;
 
     @Override
     protected int getLayoutContentId() {
@@ -40,14 +46,19 @@ public class CarListActivity extends BaseMVPAcivity<CarListContract.View, CarLis
 
         rv_list = findViewById(R.id.rv_list);
         rv_list.setLayoutManager(new LinearLayoutManager(getContext()));
+        rv_list.addItemDecoration(new SpaceItemDecoration(8));
         carListAdapter = new CarListAdapter();
         rv_list.setAdapter(carListAdapter);
+
+        mRefreshLayout = findViewById(R.id.refreshLayout);
+        mRefreshLayout.setEnableRefresh(true);
+        mRefreshLayout.setEnableLoadmore(false);
     }
 
     @Override
     public void initData(Bundle savedInstanceState) {
-   /*     showLoading();
-        mPresenter.loadData();*/
+        showLoading();
+        loadData();
     }
 
     @Override
@@ -56,21 +67,34 @@ public class CarListActivity extends BaseMVPAcivity<CarListContract.View, CarLis
         carListAdapter.setOnItemClickListener(new BaseRecycleView.OnItemClickListener<String>() {
             @Override
             public void onItemClick(View view, String data, int position) {
-                Intent intent = new Intent(getContext(),CarInfoActivity.class);
-                intent.putExtra("",data);
+                Intent intent = new Intent(getContext(), CarInfoActivity.class);
+                intent.putExtra(CarInfoActivity.CARID, data);
                 startActivity(intent);
+            }
+        });
+
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                loadData();
             }
         });
     }
 
+    private void loadData() {
+        mPresenter.loadData(TokenManager.token, TokenManager.getUserId(), "1");
+    }
+
     @Override
     public void loadData_success(List<CarListBean> cars) {
+        mRefreshLayout.finishRefresh();//完成刷新
         carListAdapter.setCars(cars);
         dimiss();
     }
 
     @Override
     public void loadData_fail(int status, String message) {
+        mRefreshLayout.finishRefresh();//完成刷新
         dimiss();
         ToastUtility.showToast(message);
     }

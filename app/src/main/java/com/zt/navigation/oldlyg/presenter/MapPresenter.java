@@ -3,6 +3,7 @@ package com.zt.navigation.oldlyg.presenter;
 
 import android.content.Context;
 import android.os.Environment;
+import android.text.TextUtils;
 
 import com.zt.navigation.oldlyg.contract.MapContract;
 
@@ -13,16 +14,25 @@ import cn.faker.repaymodel.util.FileUtility;
 import cn.faker.repaymodel.util.db.DBThreadHelper;
 
 import com.zt.navigation.oldlyg.R;
+import com.zt.navigation.oldlyg.model.LocationUploadModel;
+import com.zt.navigation.oldlyg.util.TokenManager;
 
 public class MapPresenter extends BaseMVPPresenter<MapContract.View> implements MapContract.Presenter {
     //路径为 /sd卡路径
-    private static final String appName = "NavigationMap";
-    private static final String name = "lianyungang_dxt.mpk";
-    public  String mapFilePath;
+    public static final String appName = "NavigationMap";
+    public static final String name = "lianyungang_dxt.tpk";
+    public String mapFilePath;
     private File mapFile;
 
+    public String getPath() {
+        if (TextUtils.isEmpty(mapFilePath)) {
+            mapFilePath = Environment.getExternalStorageDirectory() + "/" + appName + "/" + name;
+        }
+        return mapFilePath;
+    }
+
     public void mapFile(Context context) {
-        mapFilePath = Environment.getExternalStorageDirectory() + "/" + appName+"/"+name;
+        mapFilePath = Environment.getExternalStorageDirectory() + "/" + appName + "/" + name;
         if (isHaveMap()) {
             return;
         }
@@ -45,6 +55,13 @@ public class MapPresenter extends BaseMVPPresenter<MapContract.View> implements 
                 }
             }
         });
+    }
+
+    private LocationUploadModel uploadModel = new LocationUploadModel();
+
+    @Override
+    public void updateLocation(double lan, double lon) {
+        uploadModel.upload(TokenManager.token, lon, lan, null);
     }
 
     /**

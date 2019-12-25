@@ -93,7 +93,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
 
     private void initMap() {
         if (AppSettingUtil.getMapType()){//地图类型暂时未动态切换
-            ArcGISLocalTiledLayer arcGISLocalTiledLayer = new ArcGISLocalTiledLayer("file://"+mPresenter.mapFilePath);
+            ArcGISLocalTiledLayer arcGISLocalTiledLayer = new ArcGISLocalTiledLayer("file://"+mPresenter.getPath());
             mMapView.addLayer(arcGISLocalTiledLayer);
         }else {
             ArcGISDynamicMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.mapUrl);
@@ -196,6 +196,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
                         mMapView.zoomTo(new Point(lon, lat), 1000);
                         isOne = false;
                     }
+                    mPresenter.updateLocation(lat,lon);
                     MyApplication.startPoint = new Point(lon, lat);
                 }
             }

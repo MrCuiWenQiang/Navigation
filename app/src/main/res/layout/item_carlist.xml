@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        style="@style/item_ll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -21,10 +22,49 @@
             style="@style/item_tt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="委托号" />
+             />
+    </LinearLayout>
+    <LinearLayout
+        style="@style/item_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/base_item_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="车牌号:" />
+
+        <TextView
+            android:id="@+id/tv_carno"
+            style="@style/item_tt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+    <LinearLayout
+        style="@style/item_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/base_item_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="作业部门:" />
+
+        <TextView
+            android:id="@+id/tv_dep"
+            style="@style/item_tt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
     </LinearLayout>
 
     <LinearLayout
+        style="@style/item_ll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -40,10 +80,11 @@
             style="@style/item_tt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="作业类型" />
+             />
     </LinearLayout>
 
     <LinearLayout
+        style="@style/item_ll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -52,14 +93,14 @@
             style="@style/base_item_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="时间:" />
+            android:text="审核时间:" />
 
         <TextView
             android:id="@+id/tv_time"
             style="@style/item_tt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="时间" />
+           />
     </LinearLayout>
 
 </LinearLayout>

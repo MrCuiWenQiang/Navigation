@@ -17,6 +17,7 @@ import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.LocationDisplayManager;
 import com.esri.android.map.MapView;
 import com.esri.android.map.ags.ArcGISDynamicMapServiceLayer;
+import com.esri.android.map.ags.ArcGISLocalTiledLayer;
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.Polyline;
 import com.esri.core.map.Graphic;
@@ -31,6 +32,7 @@ import com.zt.navigation.oldlyg.Urls;
 import com.zt.navigation.oldlyg.contract.NavigationContract;
 import com.zt.navigation.oldlyg.presenter.NavigationPresenter;
 import com.zt.navigation.oldlyg.tts.BDTTS;
+import com.zt.navigation.oldlyg.util.AppSettingUtil;
 import com.zt.navigation.oldlyg.view.include.MainRouceListInclude;
 import com.zt.navigation.oldlyg.view.include.NaviceStatusInclude;
 
@@ -143,6 +145,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
                         mPresenter.navigation(new Point(lon, lat), end_point, end_name);
                         mMapView.setExtent(new Point(lon, lat), 250);
                     }
+                    mPresenter.updateLocation(lat,lon);
                     MyApplication.startPoint = new Point(lon, lat);
                 }
             }
@@ -166,8 +169,13 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
     }
 
     private void initMap() {
-        ArcGISDynamicMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.mapUrl);
-        mMapView.addLayer(arcGISTiledMapServiceLayer);
+        if (AppSettingUtil.getMapType()){//地图类型暂时未动态切换
+            ArcGISLocalTiledLayer arcGISLocalTiledLayer = new ArcGISLocalTiledLayer("file://"+mPresenter.getPath());
+            mMapView.addLayer(arcGISLocalTiledLayer);
+        }else {
+            ArcGISDynamicMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.mapUrl);
+            mMapView.addLayer(arcGISTiledMapServiceLayer);
+        }
         hiddenSegmentsLayer = new GraphicsLayer();
         mMapView.addLayer(hiddenSegmentsLayer);
         mGraphicsLayer = new GraphicsLayer();

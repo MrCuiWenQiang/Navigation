@@ -17,8 +17,9 @@ public class Urls {
 
 
     private static final String URL = "http://www.boea.cn/DhApi/api";
-    public static final String CARLIST = URL+"";
-    public static final String CARINFO = URL+"";
+    public static final String CARLIST = URL+"/DispatchList";
+    public static final String UPDATELOCATION = URL+"/LocationUpload";
+    public static final String CARINFO = URL+"/DispatchInfo";
     public static final String FEEDBACK = URL+"/Idea";
     public static final String LOGIN = URL+"/Logoin";
 }
