@@ -105,6 +105,7 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
                 break;
             }
             case R.id.two_1: {
+                mPresenter.showUsers();
                 break;
             }
             case R.id.two_2: {
@@ -148,6 +149,31 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
 
     @Override
     public void settingMapType_Fail(int type, String msg) {
+        dimiss();
+        ToastUtility.showToast(msg);
+    }
+
+    @Override
+    public void showUsers(String[] values) {
+        showListDialog(values, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String sv = values[which];
+                dialog.dismiss();
+                showLoading();
+                mPresenter.settingUser(sv);
+            }
+        });
+    }
+
+    @Override
+    public void settingUser_Success(String msg) {
+        dimiss();
+        ToastUtility.showToast(msg);
+    }
+
+    @Override
+    public void settingUser_Fail(String msg) {
         dimiss();
         ToastUtility.showToast(msg);
     }
