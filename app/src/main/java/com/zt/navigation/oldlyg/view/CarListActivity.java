@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -29,9 +30,13 @@ import java.util.List;
  */
 public class CarListActivity extends BaseMVPAcivity<CarListContract.View, CarListPresenter> implements CarListContract.View {
 
+    public static final String CAR_NO ="CAR_NO";
+
     private RecyclerView rv_list;
     private CarListAdapter carListAdapter;
     private RefreshLayout mRefreshLayout;
+
+    private String carNo = null;
 
     @Override
     protected int getLayoutContentId() {
@@ -58,6 +63,8 @@ public class CarListActivity extends BaseMVPAcivity<CarListContract.View, CarLis
     @Override
     public void initData(Bundle savedInstanceState) {
         showLoading();
+        Intent intent = getIntent();
+        carNo = intent.getStringExtra(CAR_NO);
         loadData();
     }
 
@@ -82,7 +89,11 @@ public class CarListActivity extends BaseMVPAcivity<CarListContract.View, CarLis
     }
 
     private void loadData() {
-        mPresenter.loadData(TokenManager.token, TokenManager.getUserId(), "1");
+        if (TextUtils.isEmpty(carNo)){
+            mPresenter.loadData(TokenManager.token, TokenManager.getUserId(), "1");
+        }else {
+            mPresenter.loadData(TokenManager.token, carNo, "2");
+        }
     }
 
     @Override

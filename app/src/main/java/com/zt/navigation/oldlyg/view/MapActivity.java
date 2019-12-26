@@ -299,6 +299,9 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
             case REQUEST_CODE_SCAN: { //扫描结果
                 if (resultCode == CaptureActivity.CAPTURE_SCAN_CODE) {
                     String code = data.getStringExtra(CaptureActivity.CAPTURE_SCAN_RESULT);
+                    Intent intent = new Intent(getContext(),CarListActivity.class);
+                    intent.putExtra(CarListActivity.CAR_NO,code);
+                    startActivity(intent);
                 }
             }
         }
