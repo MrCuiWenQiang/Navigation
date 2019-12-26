@@ -1,6 +1,7 @@
 package com.zt.navigation.oldlyg.view;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -136,10 +137,13 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
     }
 
     @Override
-    public void settingMapType(String name) {
+    public void settingMapType(String name,boolean value) {
         dimiss();
         QMUICommonListItemView view = qmui_gl.findViewById(R.id.one_2);
         view.setDetailText(name);
+        Intent intent = new Intent(getResources().getString(R.string.action));
+        intent.putExtra("MAPTYPE",value);
+        sendBroadcast(intent);
     }
 
     @Override

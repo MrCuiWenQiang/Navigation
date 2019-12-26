@@ -16,6 +16,7 @@ import com.zt.navigation.oldlyg.presenter.CarInfoPresenter;
 import cn.faker.repaymodel.mvp.BaseMVPAcivity;
 
 import com.zt.navigation.oldlyg.R;
+import com.zt.navigation.oldlyg.view.adapter.CarInfoAdapter;
 
 /**
  * 派车单详情
@@ -36,6 +37,8 @@ public class CarInfoActivity extends BaseMVPAcivity<CarInfoContract.View, CarInf
     private TextView tv_weight;
     private RecyclerView rv_address;
     private Button bt_nav;
+
+    private CarInfoAdapter carInfoAdapter = new CarInfoAdapter();
 
     @Override
     protected int getLayoutContentId() {
@@ -61,6 +64,7 @@ public class CarInfoActivity extends BaseMVPAcivity<CarInfoContract.View, CarInf
         bt_nav = findViewById(R.id.bt_nav);
 
         rv_address.setLayoutManager(new LinearLayoutManager(getContext()));
+        rv_address.setAdapter(carInfoAdapter);
     }
 
     @Override
@@ -88,6 +92,7 @@ public class CarInfoActivity extends BaseMVPAcivity<CarInfoContract.View, CarInf
         tv_cargo.setText(carInfoBean.getCargo());
         tv_mark.setText(carInfoBean.getMark());
         tv_weight.setText(carInfoBean.getWeight());
+        carInfoAdapter.setData(carInfoBean.getAddress());
     }
 
     @Override

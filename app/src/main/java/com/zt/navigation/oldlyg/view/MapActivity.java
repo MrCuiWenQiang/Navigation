@@ -1,7 +1,10 @@
 package com.zt.navigation.oldlyg.view;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -52,8 +55,11 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     private LinearLayout ll_local;
     private LinearLayout ll_task;
 
+    private BroadcastReceiver receiver;
 
     private boolean isOne = false;//第一次进入 定位缩放自身
+    private int layerIndex = -1;
+    private boolean mapType;
 
     private double lat;
     private double lon;
@@ -88,17 +94,26 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     public void initData(Bundle savedInstanceState) {
         initMap();
         initPermission();
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                boolean value = intent.getBooleanExtra("MAPTYPE",false);
+                if (layerIndex < 0) return;
+                if (value==mapType)return;
+
+                mMapView.removeLayer(layerIndex);
+                selectMap();
+            }
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(getResources().getString(R.string.action));
+        registerReceiver(receiver, filter);
     }
 
 
     private void initMap() {
-        if (AppSettingUtil.getMapType()){//地图类型暂时未动态切换
-            ArcGISLocalTiledLayer arcGISLocalTiledLayer = new ArcGISLocalTiledLayer("file://"+mPresenter.getPath());
-            mMapView.addLayer(arcGISLocalTiledLayer);
-        }else {
-            ArcGISDynamicMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.mapUrl);
-            mMapView.addLayer(arcGISTiledMapServiceLayer);
-        }
+        selectMap();
         mGraphicsLayer = new GraphicsLayer();
         mMapView.addLayer(mGraphicsLayer);
         hiddenSegmentsLayer = new GraphicsLayer();
@@ -118,6 +133,15 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         });
     }
 
+    private void selectMap() {
+        if (mapType = AppSettingUtil.getMapType()) {
+            ArcGISLocalTiledLayer arcGISLocalTiledLayer = new ArcGISLocalTiledLayer("file://" + mPresenter.getPath());
+            layerIndex = mMapView.addLayer(arcGISLocalTiledLayer);
+        } else {
+            ArcGISDynamicMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.mapUrl);
+            layerIndex = mMapView.addLayer(arcGISTiledMapServiceLayer);
+        }
+    }
 
     private void initPermission() {
         String[] permissions = {
@@ -142,7 +166,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         String[] tmpList = new String[toApplyList.size()];
         if (!toApplyList.isEmpty()) {
             ActivityCompat.requestPermissions(this, toApplyList.toArray(tmpList), 123);
-        }else {
+        } else {
             mPresenter.mapFile(getContext());
         }
 
@@ -196,7 +220,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
                         mMapView.zoomTo(new Point(lon, lat), 1000);
                         isOne = false;
                     }
-                    mPresenter.updateLocation(lat,lon);
+                    mPresenter.updateLocation(lat, lon);
                     MyApplication.startPoint = new Point(lon, lat);
                 }
             }
@@ -324,6 +348,9 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     protected void onDestroy() {
         super.onDestroy();
         locationDisplayManager.stop();
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+        }
     }
 
 

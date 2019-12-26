@@ -20,6 +20,6 @@ public class SettingPresenter extends BaseMVPPresenter<SettingContract.View> imp
         if (value!=AppSettingUtil.getMapType()){
             AppSettingUtil.setMapType(value);
         }
-        getView().settingMapType(maps[index]);
+        getView().settingMapType(maps[index],value);
     }
 }

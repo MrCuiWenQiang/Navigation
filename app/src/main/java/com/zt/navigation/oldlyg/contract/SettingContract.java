@@ -5,7 +5,7 @@ public class SettingContract {
     public interface View {
         void settingCatType(String name);
         void settingCatType_Fail(int type,String name);
-        void settingMapType(String name);
+        void settingMapType(String name,boolean value);
         void settingMapType_Fail(int type,String msg);
     }
 
