@@ -72,8 +72,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':fakerti')
     implementation files('libs/com.baidu.tts_2.3.2.20180713_6101c2a.jar')
-
     //SmartRefreshLayout
     api 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.4-7'
     api 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.4-7'
+    implementation files('libs/zip4j-2.2.8.jar')
 }

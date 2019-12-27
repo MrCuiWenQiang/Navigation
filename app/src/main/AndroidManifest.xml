@@ -67,6 +67,7 @@
         <activity android:name=".view.CarInfoActivity" />
         <!--<activity android:name=".view.LoginActivity" />-->
         <activity android:name=".view.MapActivity" />
+        <activity android:name=".view.MapFileActivity" />
     </application>
 
 </manifest>

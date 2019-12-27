@@ -1,21 +1,23 @@
 package com.zt.navigation.oldlyg.view;
 
 import android.os.Bundle;
-import android.os.Environment;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.zt.navigation.oldlyg.R;
+import com.zt.navigation.oldlyg.contract.MapFileContract;
+import com.zt.navigation.oldlyg.presenter.MapFilePresenter;
 
-import java.io.File;
+import cn.faker.repaymodel.mvp.BaseMVPAcivity;
 
-import cn.faker.repaymodel.activity.BaseToolBarActivity;
-import cn.faker.repaymodel.util.FileUtility;
-import cn.faker.repaymodel.util.db.DBThreadHelper;
+/**
+ * 地图资源管理
+ */
+public class MapFileActivity extends BaseMVPAcivity<MapFileContract.View, MapFilePresenter> implements MapFileContract.View, View.OnClickListener {
 
-public class MapFileActivity extends BaseToolBarActivity {
-    //路径为 /sd卡路径
-    private static final String appName = "NavigationMap";
-    private static final String name = "lianyungang_dxt.mpk";
-    private File mapFile;
+    private TextView tv_hint;
+    private Button bt_up;
 
     @Override
     protected int getLayoutContentId() {
@@ -24,46 +26,41 @@ public class MapFileActivity extends BaseToolBarActivity {
 
     @Override
     protected void initContentView() {
+        changStatusIconCollor(false);
+        setBackBackground(R.mipmap.fanhui_black);
+        setTitle("地图资源");
 
+        tv_hint = findViewById(R.id.tv_hint);
+        bt_up = findViewById(R.id.bt_up);
     }
 
     @Override
     public void initData(Bundle savedInstanceState) {
-        if (isHaveMap()) {
-            showDialog("地图包已存在本地,无需更新");
-            return;
-        }
-        mapFile = new File(Environment.getExternalStorageDirectory() + "/" + appName, name);
-        DBThreadHelper.startThreadInPool(new DBThreadHelper.ThreadCallback() {
-            @Override
-            protected Object jobContent() throws Exception {
-                FileUtility.copyFilesFromRaw(getContext(), R.raw.lianyungang_dxt, name, Environment.getExternalStorageDirectory() + "/" + appName);
-                return null;
-            }
-
-            @Override
-            protected void jobEnd(Object o) {
-                if (isHaveMap()) {
-                    showDialog("地图包解压完成");
-                } else {
-                    showDialog("地图包解压失败");
-                }
-            }
-        });
+        showLoading();
+        mPresenter.check();
     }
 
-    /**
-     * 检测文件是否存在
-     *
-     * @return
-     */
-    private boolean isHaveMap() {
-        mapFile = new File(Environment.getExternalStorageDirectory(), appName);
-        if (mapFile.exists()) {
-            mapFile = new File(mapFile, name);
-            return mapFile.exists();
-        } else {
-            return false;
+    @Override
+    protected void initListener() {
+        super.initListener();
+        bt_up.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bt_up: {
+            }
         }
+    }
+
+    @Override
+    public void showHint(int type, String hint, String btMsg) {
+        dimiss();
+        tv_hint.setText(hint);
+        if (type==mPresenter.TYPE_SUCCESS){
+            bt_up.setVisibility(View.GONE);
+        }
+        bt_up.setText(btMsg);
     }
 }

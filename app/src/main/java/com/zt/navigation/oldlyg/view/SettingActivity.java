@@ -109,6 +109,7 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
                 break;
             }
             case R.id.two_2: {
+                toAcitvity(MapFileActivity.class);
                 break;
             }
             case R.id.two_3: {

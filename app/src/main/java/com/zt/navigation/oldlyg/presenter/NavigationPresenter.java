@@ -1,8 +1,5 @@
 package com.zt.navigation.oldlyg.presenter;
 
-import android.os.Environment;
-import android.text.TextUtils;
-
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.SpatialReference;
 import com.esri.core.map.Graphic;
@@ -14,10 +11,10 @@ import com.esri.core.tasks.na.RouteResult;
 import com.esri.core.tasks.na.RouteTask;
 import com.esri.core.tasks.na.StopGraphic;
 import com.zt.navigation.oldlyg.Urls;
-import com.zt.navigation.oldlyg.contract.AddressListContract;
 import com.zt.navigation.oldlyg.contract.NavigationContract;
 import com.zt.navigation.oldlyg.model.LocationUploadModel;
 import com.zt.navigation.oldlyg.util.TokenManager;
+import com.zt.navigation.oldlyg.util.TpkUtil;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -29,13 +26,9 @@ import cn.faker.repaymodel.util.db.DBThreadHelper;
 public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.View> implements NavigationContract.Presenter {
     private RouteTask mRouteTask = null;
     final SpatialReference wm = SpatialReference.create(4490);
-    public String mapFilePath;
 
     public String getPath(){
-        if (TextUtils.isEmpty(mapFilePath)){
-            mapFilePath =  Environment.getExternalStorageDirectory() + "/" + MapPresenter.appName + "/" + MapPresenter.name;
-        }
-        return mapFilePath;
+        return TpkUtil.getPath();
     }
     @Override
     public void queryDirections(final Point start, final Point end, String stopName) {
