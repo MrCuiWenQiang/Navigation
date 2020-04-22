@@ -4,216 +4,222 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="10dp">
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <LinearLayout
-            style="@style/ll_key_value"
+        android:layout_height="match_parent">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/llt"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <TextView
-                style="@style/layout_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="委托号:" />
-
-            <TextView
-                android:id="@+id/tv_taskno"
-                style="@style/layout_value"
+            <LinearLayout
+                style="@style/ll_key_value"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
+                android:layout_height="wrap_content">
 
-        <View style="@style/main_tab_d_view" />
+                <TextView
+                    style="@style/layout_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="委托号:" />
 
-        <LinearLayout
-            style="@style/ll_key_value"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_taskno"
+                    style="@style/layout_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
 
-            <TextView
-                style="@style/layout_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="小票号:" />
+            <View style="@style/main_tab_d_view" />
 
-            <TextView
-                android:id="@+id/tv_permitno"
-                style="@style/layout_value"
+            <LinearLayout
+                style="@style/ll_key_value"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
+                android:layout_height="wrap_content">
 
-        <View style="@style/main_tab_d_view" />
+                <TextView
+                    style="@style/layout_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="小票号:" />
 
-        <LinearLayout
-            style="@style/ll_key_value"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_permitno"
+                    style="@style/layout_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
 
-            <TextView
-                style="@style/layout_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="船 名:" />
+            <View style="@style/main_tab_d_view" />
 
-            <TextView
-                android:id="@+id/tv_vessel"
-                style="@style/layout_value"
+            <LinearLayout
+                style="@style/ll_key_value"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
+                android:layout_height="wrap_content">
 
-        <View style="@style/main_tab_d_view" />
+                <TextView
+                    style="@style/layout_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="船 名:" />
 
-        <LinearLayout
-            style="@style/ll_key_value"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_vessel"
+                    style="@style/layout_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
 
-            <TextView
-                style="@style/layout_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="航 次:" />
+            <View style="@style/main_tab_d_view" />
 
-            <TextView
-                android:id="@+id/tv_voyage"
-                style="@style/layout_value"
+            <LinearLayout
+                style="@style/ll_key_value"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
+                android:layout_height="wrap_content">
 
-        <View style="@style/main_tab_d_view" />
+                <TextView
+                    style="@style/layout_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="航 次:" />
 
-        <LinearLayout
-            style="@style/ll_key_value"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_voyage"
+                    style="@style/layout_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
 
-            <TextView
-                style="@style/layout_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="车 号:" />
+            <View style="@style/main_tab_d_view" />
 
-            <TextView
-                android:id="@+id/tv_vehicle"
-                style="@style/layout_value"
+            <LinearLayout
+                style="@style/ll_key_value"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
+                android:layout_height="wrap_content">
 
-        <View style="@style/main_tab_d_view" />
+                <TextView
+                    style="@style/layout_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="车 号:" />
 
-        <LinearLayout
-            style="@style/ll_key_value"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_vehicle"
+                    style="@style/layout_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
 
-            <TextView
-                style="@style/layout_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="作业码头:" />
+            <View style="@style/main_tab_d_view" />
 
-            <TextView
-                android:id="@+id/tv_department"
-                style="@style/layout_value"
+            <LinearLayout
+                style="@style/ll_key_value"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/layout_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="作业码头:" />
+
+                <TextView
+                    android:id="@+id/tv_department"
+                    style="@style/layout_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <View style="@style/main_tab_d_view" />
+
+
+
+            <LinearLayout
+                style="@style/ll_key_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/layout_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="货 名:" />
+
+                <TextView
+                    android:id="@+id/tv_cargo"
+                    style="@style/layout_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <View style="@style/main_tab_d_view" />
+
+            <LinearLayout
+                style="@style/ll_key_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/layout_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="唛 头:" />
+
+                <TextView
+                    android:id="@+id/tv_mark"
+                    style="@style/layout_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <View style="@style/main_tab_d_view" />
+
+            <LinearLayout
+                style="@style/ll_key_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/layout_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="预装吨数:" />
+
+                <TextView
+                    android:id="@+id/tv_weight"
+                    style="@style/layout_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <View style="@style/main_tab_d_view" />
+
         </LinearLayout>
-
-        <View style="@style/main_tab_d_view" />
-
         <LinearLayout
+            android:id="@+id/rv_t"
+            android:layout_below="@id/llt"
             style="@style/ll_key_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <TextView
                 style="@style/layout_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="目的地:" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_address"
-                style="@style/layout_value"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
         </LinearLayout>
-
-        <View style="@style/main_tab_d_view" />
-
-        <LinearLayout
-            style="@style/ll_key_value"
+        <android.support.v7.widget.RecyclerView
+            android:layout_below="@id/rv_t"
+            android:id="@+id/rv_address"
+            android:paddingLeft="14dp"
+            android:background="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/layout_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="货 名:" />
-
-            <TextView
-                android:id="@+id/tv_cargo"
-                style="@style/layout_value"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-        <View style="@style/main_tab_d_view" />
-
-        <LinearLayout
-            style="@style/ll_key_value"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/layout_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="唛 头:" />
-
-            <TextView
-                android:id="@+id/tv_mark"
-                style="@style/layout_value"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-        <View style="@style/main_tab_d_view" />
-
-        <LinearLayout
-            style="@style/ll_key_value"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/layout_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="预装吨数:" />
-
-            <TextView
-                android:id="@+id/tv_weight"
-                style="@style/layout_value"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-        <View style="@style/main_tab_d_view" />
-
+            android:layout_height="match_parent" />
 
         <Button
             android:id="@+id/bt_nav"
             style="@style/bt_up"
+            android:layout_below="@id/rv_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
@@ -222,5 +228,5 @@
             android:layout_marginBottom="22dp"
             android:text="去导航" />
 
-    </LinearLayout>
+    </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

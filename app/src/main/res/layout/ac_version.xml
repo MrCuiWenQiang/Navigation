@@ -9,14 +9,24 @@
         android:id="@+id/tv_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="地图包已是最新版本"
+        android:text="已是最新版本"
         android:textColor="@color/viewfinder_frame"
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
+    <TextView
+        android:id="@+id/tv_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="当前版本"
+        android:textColor="@color/viewfinder_frame"
+        android:textSize="13sp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_hint"/>
     <Button
         android:id="@+id/bt_up"
         style="@style/bt_up"
@@ -26,5 +36,5 @@
         android:text="点击升级"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_hint" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_now" />
 </android.support.constraint.ConstraintLayout>

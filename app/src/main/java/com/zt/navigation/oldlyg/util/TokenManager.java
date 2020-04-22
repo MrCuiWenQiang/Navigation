@@ -19,6 +19,7 @@ public class TokenManager {
     }
 
     public static void saveValue(LoginBean data) {
+        userId = data.getUSERID();
         PreferencesUtility.setPreferencesField(USERIDKEY, data.getUSERID());
     }
 }

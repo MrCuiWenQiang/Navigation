@@ -53,7 +53,7 @@ public class BootomAddressAdapter extends RecyclerView.Adapter<BootomAddressAdap
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         final String text = suggestResults.get(i);
-        if (cityAddresss!=null){
+        if (cityAddresss!=null&&cityAddresss.size()>i){
             String city = cityAddresss.get(i);
             viewHolder.tv_address.setText(city);
         }

@@ -67,6 +67,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
 
     private LocationDisplayManager locationDisplayManager;
     private AudioManager audioManager;
+
     @Override
     protected int getLayoutContentId() {
         return R.layout.ac_navigation;
@@ -84,7 +85,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
     @Override
     protected void initWindow() {
         super.initWindow();
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
@@ -117,7 +118,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
         naviceStatusInclude.setOnClickStatu(new NaviceStatusInclude.OnClickStatu() {
             @Override
             public void onExit() {
-                //关闭语音导航 定位模式
+                //关闭语音导航 定位模式；
                 isNai = false;
                 bdtts.stop();
                 rouceListInclude.clean();
@@ -145,7 +146,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
                         mPresenter.navigation(new Point(lon, lat), end_point, end_name);
                         mMapView.setExtent(new Point(lon, lat), 250);
                     }
-                    mPresenter.updateLocation(lat,lon);
+                    mPresenter.updateLocation(lat, lon);
                     MyApplication.startPoint = new Point(lon, lat);
                 }
             }
@@ -169,10 +170,10 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
     }
 
     private void initMap() {
-        if (AppSettingUtil.getMapType()){//地图类型暂时未动态切换
-            ArcGISLocalTiledLayer arcGISLocalTiledLayer = new ArcGISLocalTiledLayer("file://"+mPresenter.getPath());
+        if (AppSettingUtil.getMapType()) {//地图类型暂时未动态切换
+            ArcGISLocalTiledLayer arcGISLocalTiledLayer = new ArcGISLocalTiledLayer("file://" + mPresenter.getPath());
             mMapView.addLayer(arcGISLocalTiledLayer);
-        }else {
+        } else {
             ArcGISDynamicMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.mapUrl);
             mMapView.addLayer(arcGISTiledMapServiceLayer);
         }
@@ -238,7 +239,6 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
     }
 
 
-
     @Override
     public void navigation_success(Route route, String msg) {
         dimiss();
@@ -269,7 +269,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP: {
                 int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                if (currentVolume==0){
+                if (currentVolume == 0) {
                     currentVolume = 2;
                 }
                 currentVolume++;
@@ -278,7 +278,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
             }
             case KeyEvent.KEYCODE_VOLUME_DOWN: {
                 int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                if (currentVolume!=0){
+                if (currentVolume != 0) {
                     currentVolume--;
                     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, AudioManager.FLAG_PLAY_SOUND);
                 }

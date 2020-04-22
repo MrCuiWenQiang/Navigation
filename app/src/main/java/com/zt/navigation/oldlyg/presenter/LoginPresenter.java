@@ -53,14 +53,13 @@ public class LoginPresenter extends BaseMVPPresenter<LoginContract.View> impleme
                     getView().login_Success("登录成功");
                     PreferencesUtility.setPreferencesField(CARNO, carNo);
                     PreferencesUtility.setPreferencesField(CARHEAD, carHead);
-                    PreferencesUtility.setPreferencesField(CARHEAD, carHead);
 
-                    String userJson = PreferencesUtility.getPreferencesAsString(USERLIST);
-                    List<UserBean> userBeans = JsonUtil.fromList(userJson, UserBean.class);
+//                    String userJson = PreferencesUtility.getPreferencesAsString(USERLIST);
+                  /*  List<UserBean> userBeans = JsonUtil.fromList(userJson, UserBean.class);
                     if (userBeans == null) {
                         userBeans = new ArrayList<>();
                     }
-                    if (userBeans.size() > 0) {
+                  if (userBeans.size() > 0) {
                         int length = userBeans.size();
                         for (int i = 0; i < length; i++) {
                             UserBean item = userBeans.get(i);
@@ -70,10 +69,10 @@ public class LoginPresenter extends BaseMVPPresenter<LoginContract.View> impleme
                                 --length;
                             }
                         }
-                    }
+                    }*/
+                    List<UserBean>  userBeans = new ArrayList<>();
                     userBeans.add(new UserBean(user));
                     PreferencesUtility.setPreferencesField(USERLIST, JsonUtil.convertObjectToJson(userBeans));
-
                     TokenManager.saveValue(bean);
                 } else {
                     onFailed(-1, "登录失败:后台数据未返回成功");

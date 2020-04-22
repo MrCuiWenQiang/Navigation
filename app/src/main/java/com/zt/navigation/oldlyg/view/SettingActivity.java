@@ -24,11 +24,10 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
     private String[] item_one_name = new String[]{"路线模式", "地图模式"};
     private int[] one_ids = new int[]{R.id.one_1, R.id.one_2};
     private String[] item_two_name = new String[]{"车辆设置", "地图资源", "版本更新"};
-    private int[] two_ids = new int[]{R.id.two_1, R.id.two_2, R.id.two_3, R.id.two_4};
+    private int[] two_ids = new int[]{R.id.two_1, R.id.two_2, R.id.two_3};
     private String[] item_three_name = new String[]{"意见反馈", "使用说明"};
     private int[] three_ids = new int[]{R.id.three_1, R.id.three_2};
     private String[] item_one_describe;
-
 
 
     private QMUIGroupListView qmui_gl;
@@ -86,8 +85,8 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
                 showListDialog(mPresenter.cats, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        boolean select = which==1;//fale 为在线加载
-                        mPresenter.settingCatType(which,select);
+                        boolean select = which == 1;//fale 为在线加载
+                        mPresenter.settingCatType(which, select);
                         dialog.dismiss();
                     }
                 });
@@ -97,8 +96,8 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
                 showListDialog(mPresenter.maps, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        boolean select = which==1;//fale 为小车
-                        mPresenter.settingMapType(which,select);
+                        boolean select = which == 1;//fale 为小车
+                        mPresenter.settingMapType(which, select);
                         dialog.dismiss();
                     }
                 });
@@ -113,11 +112,10 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
                 break;
             }
             case R.id.two_3: {
+                toAcitvity(VersionActivity.class);
                 break;
             }
-            case R.id.two_4: {
-                break;
-            }
+
             case R.id.three_1: {
                 toAcitvity(FeedbackActivity.class);
                 break;
@@ -139,12 +137,12 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
     }
 
     @Override
-    public void settingMapType(String name,boolean value) {
+    public void settingMapType(String name, boolean value) {
         dimiss();
         QMUICommonListItemView view = qmui_gl.findViewById(R.id.one_2);
         view.setDetailText(name);
         Intent intent = new Intent(getResources().getString(R.string.action));
-        intent.putExtra("MAPTYPE",value);
+        intent.putExtra("MAPTYPE", value);
         sendBroadcast(intent);
     }
 

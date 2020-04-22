@@ -68,6 +68,7 @@
         <!--<activity android:name=".view.LoginActivity" />-->
         <activity android:name=".view.MapActivity" />
         <activity android:name=".view.MapFileActivity" />
+        <activity android:name=".view.VersionActivity" />
     </application>
 
 </manifest>

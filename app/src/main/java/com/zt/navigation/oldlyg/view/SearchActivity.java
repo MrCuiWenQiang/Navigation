@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Point;
 import com.esri.core.map.Feature;
+import com.esri.core.tasks.ags.find.FindResult;
 import com.zt.navigation.oldlyg.R;
 import com.zt.navigation.oldlyg.contract.SearchContract;
 import com.zt.navigation.oldlyg.model.bean.HistoryBean;
@@ -133,11 +134,21 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
     }
 
     @Override
-    public void search_Success(int type, Iterator<Object> iterator) {
+    public void search_Success(int type, List<FindResult> datas) {
          Map<String, Point> search_Data = new HashMap<>();
         ArrayList<String> names = new ArrayList<>();
         ArrayList<String> cityAddress = new ArrayList<>();
-        while (iterator.hasNext()) {
+        for (FindResult item:datas) {
+            String name = item.getValue();
+            if (item.getGeometry() instanceof Point){
+                search_Data.put(name, (Point) item.getGeometry());
+                names.add(name);
+            }
+
+//            cityAddress.add(sb_Address.toString());
+        }
+
+ /*       while (iterator.hasNext()) {
             Feature feature = (Feature) iterator.next();
             Map<String, Object> attributes = feature.getAttributes();
             Geometry geometry = feature.getGeometry();
@@ -146,7 +157,7 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
             String name = null;
             StringBuffer sb_Address= new StringBuffer();
             for (String key : set) {
-                if (i == 6) {
+                if ("NAME".equals(key)) {
                     name = String.valueOf(attributes.get(key));
                 } else if (i == 7||i==8||i==9) {
                     sb_Address.append(String.valueOf(attributes.get(key)));
@@ -160,7 +171,7 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
             } else {
                 continue;
             }
-        }
+        }*/
         if (type == QUERY_TYPE_ED) {
             mRvSearch.setVisibility(View.VISIBLE);
             //自动搜索

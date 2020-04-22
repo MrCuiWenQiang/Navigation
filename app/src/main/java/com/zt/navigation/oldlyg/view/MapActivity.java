@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -26,11 +27,14 @@ import com.esri.android.map.ags.ArcGISLocalTiledLayer;
 import com.esri.android.map.event.OnSingleTapListener;
 import com.esri.android.map.event.OnStatusChangedListener;
 import com.esri.core.geometry.Point;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.zt.navigation.oldlyg.MyApplication;
 import com.zt.navigation.oldlyg.R;
 import com.zt.navigation.oldlyg.Urls;
 import com.zt.navigation.oldlyg.contract.MapContract;
 import com.zt.navigation.oldlyg.presenter.MapPresenter;
+import com.zt.navigation.oldlyg.tts.BDTTS;
 import com.zt.navigation.oldlyg.util.AppSettingUtil;
 
 import java.util.ArrayList;
@@ -64,6 +68,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     private double lat;
     private double lon;
     private LocationDisplayManager locationDisplayManager;
+    private BDTTS bdtts = new BDTTS();
 
     @Override
     protected int getLayoutContentId() {
@@ -87,6 +92,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         ll_scan = findViewById(R.id.ll_scan);
         ll_task_help = findViewById(R.id.ll_task_help);
         ll_task = findViewById(R.id.ll_task);
+        bdtts.init(getContext(), new Handler());//暂时不接收信息
     }
 
 
@@ -94,7 +100,6 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     public void initData(Bundle savedInstanceState) {
         initMap();
         initPermission();
-
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -109,6 +114,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         IntentFilter filter = new IntentFilter();
         filter.addAction(getResources().getString(R.string.action));
         registerReceiver(receiver, filter);
+        mPresenter.toGetHinder();
     }
 
 
@@ -345,6 +351,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         if (locationDisplayManager != null) {
             locationDisplayManager.pause();
         }
+        bdtts.releas();
     }
 
     @Override
@@ -354,6 +361,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         if (receiver != null) {
             unregisterReceiver(receiver);
         }
+        bdtts.releas();
     }
 
 
@@ -367,4 +375,31 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         dimiss();
         showDialog(name);
     }
+
+    @Override
+    public void showArrive(String msg) {
+        showCanaelDialog(msg,true,new QMUIDialogAction.ActionListener() {
+            @Override
+            public void onClick(QMUIDialog dialog, int index) {
+                dialog.dismiss();
+                mPresenter.uploadArrive();
+            }
+        });
+    }
+
+    @Override
+    public void uploadArriveSuccess(String msg) {
+        ToastUtility.showToast(msg);
+    }
+
+    @Override
+    public void uploadArriveFail(String msg) {
+        ToastUtility.showToast(msg);
+    }
+
+    @Override
+    public void toGetHinder_Success(String msg) {
+        bdtts.speak(msg);
+    }
+
 }

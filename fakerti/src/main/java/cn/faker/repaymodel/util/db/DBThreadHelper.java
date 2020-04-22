@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import cn.faker.repaymodel.util.FileWUtil;
 import cn.faker.repaymodel.util.LogUtil;
+import cn.faker.repaymodel.util.error.ErrorUtil;
 import cn.faker.repaymodel.util.proxy.ThreadPoolProxyFactory;
 
 /**
@@ -31,6 +32,7 @@ public class DBThreadHelper {
                 try {
                     callback.t = callback.jobContent();
                 } catch (Exception e) {
+                    ErrorUtil.showError(e);
                     FileWUtil.setAppendFile(e);
                     e.printStackTrace();
                     String sOut = "";
@@ -48,6 +50,7 @@ public class DBThreadHelper {
                 });
             }
         });
+        callback.thread = job;
         ThreadPoolProxyFactory.getdBWhereThreadPool().excute(job);
     }
 
@@ -59,7 +62,6 @@ public class DBThreadHelper {
     public static final void startDownLoadData(final ThreadCallback callback) {
         initHandler();
         Thread job = null;
-        callback.thread = job;
         job = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -77,6 +79,7 @@ public class DBThreadHelper {
                 });
             }
         });
+        callback.thread = job;
         if (!TextUtils.isEmpty(callback.threadName())) {
             job.setName(callback.threadName());
         }
