@@ -102,7 +102,11 @@ public class MySyntherizer implements MainHandlerConstant {
      */
     public int speak(String text) {
         Log.i(TAG, "speak text:" + text);
-        return mSpeechSynthesizer.speak(text);
+        if (mSpeechSynthesizer!=null){
+            return mSpeechSynthesizer.speak(text);
+        }else {
+            return -1;
+        }
     }
 
     /**

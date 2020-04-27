@@ -48,9 +48,7 @@ public class MapFileActivity extends BaseMVPAcivity<MapFileContract.View, MapFil
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bt_up: {
-            }
+        if (v.getId() == R.id.bt_up) {
         }
     }
 

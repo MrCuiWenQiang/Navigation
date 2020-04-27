@@ -31,16 +31,17 @@
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             style="@style/losng"/>
+
         <EditText
             android:id="@+id/editText"
-            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
-            android:background="@color/white"
-            android:textSize="18sp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@color/white"
             android:hint="请输入车牌号+车颜色(例如Z11113黄)"
+            android:text="Z21112黄"
 
-            />
+            android:textSize="18sp" />
     </LinearLayout>
 
 

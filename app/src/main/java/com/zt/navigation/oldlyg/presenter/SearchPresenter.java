@@ -123,7 +123,7 @@ public class SearchPresenter extends BaseMVPPresenter<SearchContract.View> imple
 
     String[] fields = new String[]{"name"};
     //    String condition ;
-    int[] layerIds = new int[]{91, 92, 93, 94, 110, 79};
+    int[] layerIds = new int[]{19, 20,21,22,29,33,34,36,37,38,39,64};
 
     /**
      * 根据条件搜索, 供给RightMenuFragment使用,多图层一起查询

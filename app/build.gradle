@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+//apply plugin:'com.android.library'
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -18,7 +18,7 @@ android {
         ndk {
             abiFilters 'x86', 'armeabi', 'armeabi-v7a'
         }
-
+        multiDexEnabled true
     }
     packagingOptions {
         exclude 'META-INF/LGPL2.1'
@@ -75,5 +75,6 @@ dependencies {
     //SmartRefreshLayout
     api 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.4-7'
     api 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.4-7'
+    implementation 'com.android.support:multidex:1.0.3'
     implementation files('libs/zip4j-2.2.8.jar')
 }

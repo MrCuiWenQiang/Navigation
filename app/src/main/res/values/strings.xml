@@ -36,4 +36,8 @@
         <item>琼</item>
         <item>沪</item>
     </array>
+
+    <string name="setting_http_save">保\t存</string>
+    <string name="setting_net_ip">业务服务地址：</string>
+    <string name="setting_gis_ip">地图服务地址：</string>
 </resources>

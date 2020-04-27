@@ -2,23 +2,29 @@ package com.zt.navigation.oldlyg.view;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.baidu.tts.client.SpeechError;
 import com.esri.android.map.GraphicsLayer;
 import com.esri.android.map.LocationDisplayManager;
 import com.esri.android.map.MapView;
@@ -33,9 +39,15 @@ import com.zt.navigation.oldlyg.MyApplication;
 import com.zt.navigation.oldlyg.R;
 import com.zt.navigation.oldlyg.Urls;
 import com.zt.navigation.oldlyg.contract.MapContract;
+import com.zt.navigation.oldlyg.model.bean.UserBean;
+import com.zt.navigation.oldlyg.model.webbean.LoginBean;
 import com.zt.navigation.oldlyg.presenter.MapPresenter;
 import com.zt.navigation.oldlyg.tts.BDTTS;
+import com.zt.navigation.oldlyg.tts.listener.BDListener;
 import com.zt.navigation.oldlyg.util.AppSettingUtil;
+import com.zt.navigation.oldlyg.util.TokenManager;
+import com.zt.navigation.oldlyg.view.deploy.IntentKey;
+import com.zt.navigation.oldlyg.view.service.BroadcastService;
 
 import java.util.ArrayList;
 
@@ -46,6 +58,7 @@ import cn.faker.repaymodel.zxing.activity.CaptureActivity;
 public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> implements MapContract.View, View.OnClickListener {
     private final int PERMISSIONS_CODE_LOCATION = 200;
     private final int REQUEST_CODE_SCAN = 300;
+    private final int REQUEST_CODE_NFC_SCAN = 320;
 
     private MapView mMapView;
     private TextView tv_search;
@@ -68,7 +81,6 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     private double lat;
     private double lon;
     private LocationDisplayManager locationDisplayManager;
-    private BDTTS bdtts = new BDTTS();
 
     @Override
     protected int getLayoutContentId() {
@@ -92,20 +104,55 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         ll_scan = findViewById(R.id.ll_scan);
         ll_task_help = findViewById(R.id.ll_task_help);
         ll_task = findViewById(R.id.ll_task);
-        bdtts.init(getContext(), new Handler());//暂时不接收信息
     }
 
 
     @Override
     public void initData(Bundle savedInstanceState) {
+        if (getIntent() != null) {
+            Intent it = getIntent();
+            String carid = it.getStringExtra(IntentKey.KRY_CARNO);
+
+            if (TextUtils.isEmpty(carid)) {
+                if (TextUtils.isEmpty(TokenManager.getUserId())) {
+                    showDialog("请传递车牌号参数", new QMUIDialogAction.ActionListener() {
+                        @Override
+                        public void onClick(QMUIDialog dialog, int index) {
+                            dialog.dismiss();
+                            finish();
+                        }
+                    });
+                }
+            } else {
+                LoginBean userBean = new LoginBean();
+                userBean.setUSERID(carid);
+                TokenManager.saveValue(userBean);
+            }
+        }
+        if (!TextUtils.isEmpty(TokenManager.getUserId())) {
+            Intent intent = new Intent(this, BroadcastService.class);
+            intent.putExtra(BroadcastService.KEY_BROAD, TokenManager.getUserId());
+            bindService(intent, new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName componentName) {
+
+                }
+            }, Context.BIND_AUTO_CREATE);
+        }
+
         initMap();
         initPermission();
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                boolean value = intent.getBooleanExtra("MAPTYPE",false);
+                boolean value = intent.getBooleanExtra("MAPTYPE", false);
                 if (layerIndex < 0) return;
-                if (value==mapType)return;
+                if (value == mapType) return;
 
                 mMapView.removeLayer(layerIndex);
                 selectMap();
@@ -198,7 +245,6 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         ll_cat.setOnClickListener(this);
         ll_scan.setOnClickListener(this);
         ll_task_help.setOnClickListener(this);
-
         mMapView.setOnSingleTapListener(new OnSingleTapListener() {
             @Override
             public void onSingleTap(float v, float v1) {
@@ -223,7 +269,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
                     lat = location.getLatitude();//纬度
                     lon = location.getLongitude();//经度
                     if (isOne) {
-                        mMapView.zoomTo(new Point(lon, lat), 1000);
+                        mMapView.zoomTo(new Point(lon, lat), 250);
                         isOne = false;
                     }
                     mPresenter.updateLocation(lat, lon);
@@ -249,9 +295,62 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         locationDisplayManager.start();
     }
 
+    private String[] selectItems = new String[]{"二维码扫描", "NFC扫描"};
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+        int id = v.getId();
+        if (id == R.id.tv_search) {
+            toAcitvity(SearchActivity.class);
+        } else if (id == R.id.ll_add) {
+            mMapView.zoomin();
+        } else if (id == R.id.ll_local) {
+            if (MyApplication.startPoint != null) {
+                mMapView.zoomTo(MyApplication.startPoint, 10);
+            } else {
+                ToastUtility.showToast("请检查定位开关和权限是否打开!");
+            }
+        } else if (id == R.id.ll_subtract) {
+            mMapView.zoomout();
+        } else if (id == R.id.ll_setting) {
+            toAcitvity(SettingActivity.class);
+        } else if (id == R.id.ll_help) {
+        } else if (id == R.id.ll_listen) {
+            toAcitvity(FeedbackActivity.class);
+        } else if (id == R.id.ll_cat) {
+            toAcitvity(CarListActivity.class);
+        } else if (id == R.id.ll_scan) {
+            showListDialog(selectItems, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    switch (i) {
+                        case 0: {
+                            Intent intent = new Intent(getContext(), CaptureActivity.class);
+                            startActivityForResult(intent, REQUEST_CODE_SCAN);
+                            dialogInterface.dismiss();
+                            break;
+                        }
+                        case 1: {
+                            PackageManager packageManager = getPackageManager();
+
+                            boolean b1 = packageManager
+                                    .hasSystemFeature(PackageManager.FEATURE_NFC);
+                            if (b1){
+                                Intent intent = new Intent(getContext(), NFCActivity.class);
+                                startActivityForResult(intent, REQUEST_CODE_NFC_SCAN);
+                            }else {
+                                ToastUtility.showToast("该手机不支持NFC");
+                            }
+                            dialogInterface.dismiss();
+                            break;
+                        }
+                    }
+                }
+            });
+        } else if (id == R.id.ll_task_help) {
+        }
+
+       /* switch (v.getId()) {
             case R.id.tv_search: {
                 toAcitvity(SearchActivity.class);
                 break;
@@ -295,7 +394,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
             case R.id.ll_task_help: {
                 break;
             }
-        }
+        }*/
     }
 
     @Override
@@ -305,8 +404,16 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
             case REQUEST_CODE_SCAN: { //扫描结果
                 if (resultCode == CaptureActivity.CAPTURE_SCAN_CODE) {
                     String code = data.getStringExtra(CaptureActivity.CAPTURE_SCAN_RESULT);
-                    Intent intent = new Intent(getContext(),CarListActivity.class);
-                    intent.putExtra(CarListActivity.CAR_NO,code);
+                    Intent intent = new Intent(getContext(), CarListActivity.class);
+                    intent.putExtra(CarListActivity.CAR_NO, code);
+                    startActivity(intent);
+                }
+            }
+            case REQUEST_CODE_NFC_SCAN: { //NFC扫描结果
+                if (resultCode == NFCActivity.CAPTURE_SCAN_CODE) {
+                    String code = data.getStringExtra(NFCActivity.NFC_SCAN_RESULT);
+                    Intent intent = new Intent(getContext(), CarListActivity.class);
+                    intent.putExtra(CarListActivity.CAR_NO, code);
                     startActivity(intent);
                 }
             }
@@ -351,7 +458,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         if (locationDisplayManager != null) {
             locationDisplayManager.pause();
         }
-        bdtts.releas();
+
     }
 
     @Override
@@ -361,7 +468,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         if (receiver != null) {
             unregisterReceiver(receiver);
         }
-        bdtts.releas();
+
     }
 
 
@@ -378,7 +485,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
 
     @Override
     public void showArrive(String msg) {
-        showCanaelDialog(msg,true,new QMUIDialogAction.ActionListener() {
+        showCanaelDialog(msg, true, new QMUIDialogAction.ActionListener() {
             @Override
             public void onClick(QMUIDialog dialog, int index) {
                 dialog.dismiss();
@@ -399,6 +506,20 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
 
     @Override
     public void toGetHinder_Success(String msg) {
+        BDTTS bdtts = new BDTTS();
+        bdtts.init(getContext(), new Handler(), new BDListener() {
+            @Override
+            public void onSpeechFinish(String s) {
+                super.onSpeechFinish(s);
+                bdtts.releas();
+            }
+
+            @Override
+            public void onError(String s, SpeechError speechError) {
+                super.onError(s, speechError);
+                bdtts.releas();
+            }
+        });
         bdtts.speak(msg);
     }
 

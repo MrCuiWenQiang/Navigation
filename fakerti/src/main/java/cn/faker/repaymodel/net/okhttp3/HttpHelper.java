@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,7 @@ import cn.faker.repaymodel.net.okhttp3.callback.DownLoadFileCallBack;
 import cn.faker.repaymodel.net.okhttp3.callback.DownloadBitmapCallback;
 import cn.faker.repaymodel.net.okhttp3.callback.HttpResponseCallback;
 import cn.faker.repaymodel.net.okhttp3.cookie.Cookie;
+import cn.faker.repaymodel.util.error.ErrorUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -113,6 +115,10 @@ public class HttpHelper {
     public static void post(String path, Object object, BasicCallback callback) {
         callback.setOnFailedAll(onFailedAll);
         Call call = getPostCall(path, object);
+        if (call==null){
+            callback.onFailure(call,new IOException("address error"));
+            return;
+        }
         callback.setUrl(path);
         HttpManager.addCall(path, call);
         call.enqueue(callback);
@@ -130,10 +136,15 @@ public class HttpHelper {
         }*/
 //        String base64data= Base64.encode(data);
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json.getBytes());
-
-        Request request = new Request.Builder().url(path)
-                .addHeader("Content-Length", String.valueOf(json.length()))
-                .post(body).build();
+        Request request=null;
+        try {
+            request =new Request.Builder().url(path)
+                    .addHeader("Content-Length", String.valueOf(json.length()))
+                    .post(body).build();;
+        } catch (java.lang.IllegalArgumentException e) {
+            ErrorUtil.showError(e);
+            return null;
+        }
         if (httpHelper == null) {
             httpHelper = new HttpHelper();
         }
@@ -278,7 +289,13 @@ public class HttpHelper {
         }
         callback.setOnFailedAll(onFailedAll);
         Request request = null;
-        request = new Request.Builder().url(url).get().build();
+        try {
+            request = new Request.Builder().url(url).get().build();
+        } catch (java.lang.IllegalArgumentException e) {
+            ErrorUtil.showError(e);
+            callback.onFailed(01,"网络地址不合法");
+            return;
+        }
         if (httpHelper == null) {
             httpHelper = new HttpHelper();
         }

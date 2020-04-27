@@ -25,9 +25,19 @@ public class BDTTS {
     // 主控制类，所有合成控制方法从这个类开始
     protected MySyntherizer synthesizer;
 
+    public static boolean isHave = false;//判断是否被其他activity初始化
+
     public void init(Context context, Handler mainHandler) {
+        init(context, mainHandler,null);
+    }
+
+
+    public void init(Context context, Handler mainHandler, SpeechSynthesizerListener listener) {
+        isHave = true;
         LoggerProxy.printable(true); // 日志打印在logcat中
-        SpeechSynthesizerListener listener = new BDListener();
+        if (listener == null) {
+            listener = new BDListener();
+        }
 //        Map<String, String> params = getParams();
         Map<String, String> params = new HashMap<>();
         // appId appKey secretKey 网站上您申请的应用获取。注意使用离线合成功能的话，需要应用中填写您app的包名。包名在build.gradle中获取。
@@ -35,16 +45,18 @@ public class BDTTS {
         synthesizer = new NonBlockSyntherizer(context, initConfig, mainHandler); // 此处可以改为MySyntherizer 了解调用过程
     }
 
-    public void releas(){
-        if (synthesizer!=null){
+
+    public void releas() {
+        isHave = false;
+        if (synthesizer != null) {
             synthesizer.release();
         }
     }
 
     //如果不为0则播放失败
-    public int speak(String txt){
+    public int speak(String txt) {
         int code = 0;
-        if (synthesizer!=null){
+        if (synthesizer != null) {
             code = synthesizer.speak(txt);
         }
         return code;
@@ -55,7 +67,7 @@ public class BDTTS {
      */
     public int stop() {
         int code = 0;
-        if (synthesizer!=null){
+        if (synthesizer != null) {
             code = synthesizer.stop();
         }
         return code;

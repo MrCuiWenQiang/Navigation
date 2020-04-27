@@ -107,6 +107,7 @@ public abstract class HttpResponseCallback extends BasicCallback {
 
                             @Override
                             public void run() {
+                                onFailed(REQUEST_CODE_NULL_BaseResultBean, "数据解析异常",result);
                                 onFailed(REQUEST_CODE_NULL_BaseResultBean, "数据解析异常");
                             }
                         });
@@ -149,6 +150,10 @@ public abstract class HttpResponseCallback extends BasicCallback {
 
     public abstract void onSuccess(String data);
     public  void onMessage(String msg){
+
+    }
+
+    public  void onFailed(int status, String message,String json){
 
     }
 

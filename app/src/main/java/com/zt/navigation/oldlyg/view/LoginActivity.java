@@ -51,10 +51,24 @@ public class LoginActivity extends BaseMVPAcivity<LoginContract.View, LoginPrese
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+        if (v.getId()==R.id.bt_login){
+            showLoading();
+            mPresenter.login(getValue(tv_head),getValue(editText));
+        }else if (v.getId()==R.id.tv_head){
+            showListDialog(carHeads, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    tv_head.setText(carHeads[which]);
+                    dialog.dismiss();
+                }
+            });
+        }
+   /*     switch (v.getId()) {
             case R.id.bt_login: {
+                // TODO: 2020/4/24 暂时隐藏
                 showLoading();
                 mPresenter.login(getValue(tv_head),getValue(editText));
+//                toAcitvity(MapActivity.class);
                 break;
             }
             case R.id.tv_head: {
@@ -67,7 +81,7 @@ public class LoginActivity extends BaseMVPAcivity<LoginContract.View, LoginPrese
                 });
                 break;
             }
-        }
+        }*/
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.zt.navigation.oldlyg.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.esri.core.geometry.Point;
+import com.esri.core.tasks.ags.find.FindResult;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.zt.navigation.oldlyg.contract.CarInfoContract;
@@ -14,9 +17,15 @@ import com.zt.navigation.oldlyg.model.webbean.CarInfoBean;
 import com.zt.navigation.oldlyg.presenter.CarInfoPresenter;
 
 import cn.faker.repaymodel.mvp.BaseMVPAcivity;
+import cn.faker.repaymodel.util.ToastUtility;
 
 import com.zt.navigation.oldlyg.R;
 import com.zt.navigation.oldlyg.view.adapter.CarInfoAdapter;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 派车单详情
@@ -108,11 +117,51 @@ public class CarInfoActivity extends BaseMVPAcivity<CarInfoContract.View, CarInf
     }
 
     @Override
+    public void searchAddresss_Fail(int type, String msg) {
+        dimiss();
+        ToastUtility.showToast(msg);
+    }
+
+    @Override
+    public void searchAddresss_Success(int type, FindResult findResult) {
+        dimiss();
+        Map<String, Point> search_Data = new HashMap<>();
+        ArrayList<String> names = new ArrayList<>();
+        ArrayList<String> cityAddress = new ArrayList<>();
+            String name = findResult.getValue();
+            if (findResult.getGeometry() instanceof Point){
+                search_Data.put(name, (Point) findResult.getGeometry());
+                names.add(name);
+            }
+
+            //跳转到路线选择展示
+            Intent intent = new Intent();
+            Bundle bd = new Bundle();
+            bd.putSerializable(AddressListActivity.INTENT_KEY_SEARCH_DATA, (Serializable) search_Data);
+            bd.putStringArrayList(AddressListActivity.INTENT_KEY_NAME,names);
+            bd.putStringArrayList(AddressListActivity.INTENT_KEY_CITY,cityAddress);
+            intent.putExtra("bundle",bd);
+            intent.setClass(getContext(),AddressListActivity.class);
+            dimiss();
+            startActivityForResult(intent,520);
+    }
+
+    @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+        if(v.getId() == R.id.bt_nav){
+            showLoading();
+            CarInfoBean.Address data = carInfoAdapter.getTopData();
+            if (data==null){
+                dimiss();
+                ToastUtility.showToast("没有目的地可导航");
+                return;
+            }
+            mPresenter.searchAddresss(0,data.getSTORAGE());
+        }
+    /*    switch (v.getId()) {
             case R.id.bt_nav: {
                 break;
             }
-        }
+        }*/
     }
 }

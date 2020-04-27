@@ -1,5 +1,7 @@
 package com.zt.navigation.oldlyg;
 
+import android.support.multidex.MultiDex;
+
 import com.esri.core.geometry.Point;
 
 import cn.faker.repaymodel.BasicApplication;
@@ -18,6 +20,10 @@ public class MyApplication extends BasicApplication {
         LogUtil.isShow = true;
         HttpHelper.init();
         PreferencesUtility.setPreferencesUtility(getApplicationContext(),"Navigation");
+
+        MultiDex.install(this);
     }
+
+
 
 }
