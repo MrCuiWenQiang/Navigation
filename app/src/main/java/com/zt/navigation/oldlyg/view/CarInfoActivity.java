@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Point;
 import com.esri.core.tasks.ags.find.FindResult;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
@@ -123,40 +124,27 @@ public class CarInfoActivity extends BaseMVPAcivity<CarInfoContract.View, CarInf
     }
 
     @Override
-    public void searchAddresss_Success(int type, FindResult findResult) {
+    public void searchAddresss_Success(int type, String name, Geometry point) {
+        Intent intent = new Intent(getContext(), NavigationActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(NavigationActivity.INTENT_KEY_END, point);
+        bundle.putString(NavigationActivity.INTENT_KEY_END_NAME, name);
+        intent.putExtra(NavigationActivity.BUNDLE_NAME, bundle);
         dimiss();
-        Map<String, Point> search_Data = new HashMap<>();
-        ArrayList<String> names = new ArrayList<>();
-        ArrayList<String> cityAddress = new ArrayList<>();
-            String name = findResult.getValue();
-            if (findResult.getGeometry() instanceof Point){
-                search_Data.put(name, (Point) findResult.getGeometry());
-                names.add(name);
-            }
-
-            //跳转到路线选择展示
-            Intent intent = new Intent();
-            Bundle bd = new Bundle();
-            bd.putSerializable(AddressListActivity.INTENT_KEY_SEARCH_DATA, (Serializable) search_Data);
-            bd.putStringArrayList(AddressListActivity.INTENT_KEY_NAME,names);
-            bd.putStringArrayList(AddressListActivity.INTENT_KEY_CITY,cityAddress);
-            intent.putExtra("bundle",bd);
-            intent.setClass(getContext(),AddressListActivity.class);
-            dimiss();
-            startActivityForResult(intent,520);
+        startActivityForResult(intent, 520);
     }
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.bt_nav){
+        if (v.getId() == R.id.bt_nav) {
             showLoading();
             CarInfoBean.Address data = carInfoAdapter.getTopData();
-            if (data==null){
+            if (data == null) {
                 dimiss();
                 ToastUtility.showToast("没有目的地可导航");
                 return;
             }
-            mPresenter.searchAddresss(0,data.getSTORAGE());
+            mPresenter.searchAddress( data.getSTORAGE(),data.getCODE_DEPARTMENT());
         }
     /*    switch (v.getId()) {
             case R.id.bt_nav: {

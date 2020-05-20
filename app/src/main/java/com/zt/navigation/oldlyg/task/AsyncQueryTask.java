@@ -7,6 +7,8 @@ import com.esri.core.map.FeatureResult;
 import com.esri.core.tasks.query.QueryParameters;
 import com.esri.core.tasks.query.QueryTask;
 
+import cn.faker.repaymodel.util.error.ErrorUtil;
+
 public class AsyncQueryTask extends AsyncTask<Object, Void, FeatureResult> {
 
     @Override
@@ -54,6 +56,7 @@ public class AsyncQueryTask extends AsyncTask<Object, Void, FeatureResult> {
             return featureResult;
         } catch (Exception e) {
             e.printStackTrace();
+            ErrorUtil.showError(e);
         }
 
         return null;

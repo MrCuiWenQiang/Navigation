@@ -50,7 +50,13 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
     }
 
     @Override
-    public void queryDirections(final Point start, final Point end, String stopName) {
+    public void queryDirections(final Point start, final Geometry end, String stopName) {
+        ArrayList list = new ArrayList<Geometry>();
+        list.add(end);
+        queryDirections(start, list, stopName);
+    }
+
+    public void queryDirections(final Point start, final List<Geometry> ends, String stopName) {
         if (mRouteTask == null) {
             try {
                 mRouteTask = RouteTask
@@ -93,9 +99,18 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
 
                         StopGraphic point1 = new StopGraphic(start);
                         point1.setName("当前位置");
-                        StopGraphic point2 = new StopGraphic(end);
-                        point2.setName(stopName);
-                        rfaf.setFeatures(new Graphic[]{point1, point2});
+
+                        Graphic[] points = new Graphic[ends.size()+1];
+                        points[0]=point1;
+                        int i = 1;
+                        for (Geometry item :ends) {
+                            StopGraphic point2 = new StopGraphic(item);
+                            point2.setName(stopName);
+                            points[i] = point2;
+                            i++;
+                        }
+
+                        rfaf.setFeatures(points);
                         rp.setReturnDirections(true);
                         rp.setStops(rfaf);
                         rp.setOutSpatialReference(wm);
@@ -112,7 +127,7 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
                         if (o == null) {
                             getView().queryDirections_Fail("算路失败:无法规划路线");
                         } else {
-                            getView().queryDirections_Success(o, start, end);
+                            getView().queryDirections_Success(o, start, ends);
                         }
                     }
                 });
@@ -122,7 +137,12 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
     }
 
     @Override
-    public void navigation(Point start, Point end, String stopName) {
+    public void navigation(Point start, Geometry end, String stopName) {
+        ArrayList list = new ArrayList<Geometry>();
+        list.add(end);
+        navigation(start,list,stopName);
+    }
+    public void navigation(Point start, List<Geometry> ends, String stopName) {
         if (mRouteTask == null) {
             try {
                 mRouteTask = RouteTask
@@ -142,9 +162,16 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
 
                 StopGraphic point1 = new StopGraphic(start);
                 point1.setName("当前位置");
-                StopGraphic point2 = new StopGraphic(end);
-                point2.setName(stopName);
-                rfaf.setFeatures(new Graphic[]{point1, point2});
+                Graphic[] points = new Graphic[ends.size()+1];
+                points[0]=point1;
+                int i = 1;
+                for (Geometry item :ends) {
+                    StopGraphic point2 = new StopGraphic(item);
+                    point2.setName(stopName);
+                    points[i] = point2;
+                    i++;
+                }
+                rfaf.setFeatures(points);
                 rp.setReturnDirections(true);
                 rp.setStops(rfaf);
                 rp.setOutSpatialReference(wm);
@@ -184,7 +211,7 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
                     }
                     DecimalFormat df = new DecimalFormat("#.00");
 //                    String str = df.format(size * 1000);
-                    String str = df.format(size );
+                    String str = df.format(size);
                     sb.append(",距离" + str);
                     sb.append("米");
                     double surplus = Double.valueOf(str);
@@ -199,7 +226,6 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
             }
         });
     }
-
 
 
     private LocationUploadModel uploadModel = new LocationUploadModel();

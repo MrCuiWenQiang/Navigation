@@ -121,7 +121,7 @@ public class SearchPresenter extends BaseMVPPresenter<SearchContract.View> imple
     }
 
 
-    String[] fields = new String[]{"name"};
+    String[] fields = new String[]{"name","ZGGSDM"};
     //    String condition ;
     int[] layerIds = new int[]{19, 20,21,22,29,33,34,36,37,38,39,64};
 

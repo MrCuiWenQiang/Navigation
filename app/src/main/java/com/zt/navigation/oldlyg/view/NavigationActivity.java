@@ -18,6 +18,7 @@ import com.esri.android.map.LocationDisplayManager;
 import com.esri.android.map.MapView;
 import com.esri.android.map.ags.ArcGISDynamicMapServiceLayer;
 import com.esri.android.map.ags.ArcGISLocalTiledLayer;
+import com.esri.core.geometry.Geometry;
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.Polyline;
 import com.esri.core.map.Graphic;
@@ -61,7 +62,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
 
     private MapView mMapView;
     private String end_name;//终点名称
-    private Point end_point;//终点
+    private Geometry end_point;//终点
     private boolean isNai;
     private int nav_id = -1;//图层id
 
@@ -97,7 +98,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra(BUNDLE_NAME);
         end_name = bundle.getString(INTENT_KEY_END_NAME);
-        end_point = (Point) bundle.getSerializable(INTENT_KEY_END);
+        end_point = (Geometry) bundle.getSerializable(INTENT_KEY_END);
         showLoading();
         mPresenter.queryDirections(MyApplication.startPoint, end_point, end_name);
         bdtts.init(getContext(), new Handler());//暂时不接收信息
@@ -184,7 +185,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
     }
 
     @Override
-    public void queryDirections_Success(RouteResult mResults, Point startPoint, Point endPoint) {
+    public void queryDirections_Success(RouteResult mResults, Point startPoint, List<Geometry> endPoint) {
         hiddenSegmentsLayer.removeAll();
         Route curRoute = mResults.getRoutes().get(0);
         SimpleLineSymbol routeSymbol = new SimpleLineSymbol(Color.BLUE, 3);

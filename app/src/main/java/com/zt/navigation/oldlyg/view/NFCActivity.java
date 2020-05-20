@@ -24,7 +24,9 @@ public class NFCActivity extends BaseToolBarActivity {
 
     @Override
     protected void initContentView() {
-
+        isShowBackButton(false);
+        isShowToolView(false);
+        changStatusIconCollor(false);
     }
 
     @Override
@@ -41,6 +43,14 @@ public class NFCActivity extends BaseToolBarActivity {
             mNfcAdapter.enableForegroundDispatch(this, pi, null, null); //启动
         }
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mNfcAdapter != null){
+            mNfcAdapter.disableForegroundDispatch(this);
+        }
+    }
+
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -80,5 +90,9 @@ public class NFCActivity extends BaseToolBarActivity {
         return out;
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mNfcAdapter=null;
+    }
 }
