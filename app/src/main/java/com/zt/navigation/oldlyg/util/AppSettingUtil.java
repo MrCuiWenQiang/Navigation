@@ -1,5 +1,8 @@
 package com.zt.navigation.oldlyg.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import cn.faker.repaymodel.util.PreferencesUtility;
 
 /**
@@ -10,11 +13,11 @@ public class AppSettingUtil {
     private static final String MAPTYPE = "maptype";
 
     public static boolean getCatType() {
-        return PreferencesUtility.getPreferencesAsBoolean(CATTYPE);
+        return PreferencesUtility.getPreferencesAsBoolean(CATTYPE,true);
     }
 
     /**
-     * fale为小车   true 为大车 默认小车
+     * fale为小车   true 为大车 默认大车
      * @param value
      */
     public static void setCatType(boolean value) {

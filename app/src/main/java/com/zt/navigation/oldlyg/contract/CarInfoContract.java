@@ -16,12 +16,12 @@ public class CarInfoContract {
 
         void searchAddresss_Fail(int type, String msg);
 
-        void searchAddresss_Success(int type,String name, Geometry findResult);
-    }
+        void searchAddresss_Success(int type, List<String> name, List<Geometry> point);
+        }
 
     public interface Presenter {
         void loadInfo(String id);
-         void searchAddress(String name, String code);
+         void searchAddress(List<String> names, List<String> codes);
     }
 
     public interface Model {

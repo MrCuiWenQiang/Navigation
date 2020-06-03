@@ -270,9 +270,20 @@ public class HttpHelper {
 
     }
 
-    public static void get(@NonNull String url, @NonNull Callback callback) {
+    public static void get(@NonNull String url, HashMap params, @NonNull Callback callback) {
+        if (params != null && params.size() > 0) {
+            String paramData = getRequestData(params);
+            if (!TextUtils.isEmpty(paramData)) {
+                url = url + "?" + paramData;
+            }
+        }
         Request request = null;
-        request = new Request.Builder().url(url).get().build();
+        try {
+            request = new Request.Builder().url(url).get().build();
+        } catch (java.lang.IllegalArgumentException e) {
+            ErrorUtil.showError(e);
+            return;
+        }
         if (httpHelper == null) {
             httpHelper = new HttpHelper();
         }

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -32,7 +33,11 @@ import com.esri.android.map.ags.ArcGISDynamicMapServiceLayer;
 import com.esri.android.map.ags.ArcGISLocalTiledLayer;
 import com.esri.android.map.event.OnSingleTapListener;
 import com.esri.android.map.event.OnStatusChangedListener;
+import com.esri.core.geometry.Envelope;
 import com.esri.core.geometry.Point;
+import com.esri.core.geometry.Polygon;
+import com.esri.core.map.Graphic;
+import com.esri.core.symbol.SimpleFillSymbol;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.zt.navigation.oldlyg.MyApplication;
@@ -45,6 +50,7 @@ import com.zt.navigation.oldlyg.presenter.MapPresenter;
 import com.zt.navigation.oldlyg.tts.BDTTS;
 import com.zt.navigation.oldlyg.tts.listener.BDListener;
 import com.zt.navigation.oldlyg.util.AppSettingUtil;
+import com.zt.navigation.oldlyg.util.MapUtil;
 import com.zt.navigation.oldlyg.util.TokenManager;
 import com.zt.navigation.oldlyg.view.deploy.IntentKey;
 import com.zt.navigation.oldlyg.view.service.BroadcastService;
@@ -52,6 +58,7 @@ import com.zt.navigation.oldlyg.view.service.BroadcastService;
 import java.util.ArrayList;
 
 import cn.faker.repaymodel.mvp.BaseMVPAcivity;
+import cn.faker.repaymodel.util.LogUtil;
 import cn.faker.repaymodel.util.ToastUtility;
 import cn.faker.repaymodel.zxing.activity.CaptureActivity;
 
@@ -66,7 +73,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     private GraphicsLayer mGraphicsLayer;
     private GraphicsLayer hiddenSegmentsLayer;
 
-    private LinearLayout ll_setting, ll_help, ll_listen;
+    private LinearLayout ll_setting, ll_help, ll_listen,ll_message;
     private LinearLayout ll_cat, ll_scan, ll_task_help;
     private LinearLayout ll_add, ll_subtract;
     private LinearLayout ll_local;
@@ -76,6 +83,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
 
     private boolean isOne = false;//第一次进入 定位缩放自身
     private int layerIndex = -1;
+    private int layerTopIndex = -1;
     private boolean mapType;
 
     private double lat;
@@ -100,6 +108,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         ll_setting = findViewById(R.id.ll_setting);
         ll_help = findViewById(R.id.ll_help);
         ll_listen = findViewById(R.id.ll_listen);
+        ll_message = findViewById(R.id.ll_message);
         ll_cat = findViewById(R.id.ll_cat);
         ll_scan = findViewById(R.id.ll_scan);
         ll_task_help = findViewById(R.id.ll_task_help);
@@ -155,6 +164,9 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
                 if (value == mapType) return;
 
                 mMapView.removeLayer(layerIndex);
+                if (layerTopIndex!=-1){
+                    mMapView.removeLayer(layerTopIndex);
+                }
                 selectMap();
             }
         };
@@ -184,6 +196,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
                 }
             }
         });
+
     }
 
     private void selectMap() {
@@ -192,6 +205,8 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
             layerIndex = mMapView.addLayer(arcGISLocalTiledLayer);
         } else {
             ArcGISDynamicMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.mapUrl);
+            ArcGISDynamicMapServiceLayer topGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.topMapUrl);
+            layerTopIndex = mMapView.addLayer(topGISTiledMapServiceLayer);
             layerIndex = mMapView.addLayer(arcGISTiledMapServiceLayer);
         }
     }
@@ -242,15 +257,32 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         ll_setting.setOnClickListener(this);
         ll_help.setOnClickListener(this);
         ll_listen.setOnClickListener(this);
+        ll_message.setOnClickListener(this);
         ll_cat.setOnClickListener(this);
         ll_scan.setOnClickListener(this);
         ll_task_help.setOnClickListener(this);
         mMapView.setOnSingleTapListener(new OnSingleTapListener() {
             @Override
-            public void onSingleTap(float v, float v1) {
-
+            public void onSingleTap(float x, float y) {
+                Point point = mMapView.toMapPoint(new Point(x,y));
+                LogUtil.e("ss","------"+point.getY()+","+point.getX());
             }
+
+
         });
+        /*Envelope envelope = new Envelope();
+        envelope.setXMax(119.52);
+        envelope.setYMax(34.645);
+        envelope.setXMin(119.273);
+        envelope.setYMin(34.645);*/
+
+/*        Polygon polygon = new Polygon();
+        polygon.startPath(119.273,34.645);
+        polygon.lineTo(119.52,34.784);
+        polygon.lineTo(119.52,34.645);
+        polygon.lineTo(119.273,34.784);
+        polygon.lineTo(119.273,34.645);
+        mMapView.setExtent(polygon);*/
     }
 
 
@@ -269,7 +301,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
                     lat = location.getLatitude();//纬度
                     lon = location.getLongitude();//经度
                     if (isOne) {
-                        mMapView.zoomTo(new Point(lon, lat), 250);
+                        mMapView.zoomTo(new Point(lon, lat), 10);
                         isOne = false;
                     }
                     mPresenter.updateLocation(lat, lon);
@@ -317,6 +349,8 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         } else if (id == R.id.ll_help) {
         } else if (id == R.id.ll_listen) {
             toAcitvity(FeedbackActivity.class);
+        }else if (id == R.id.ll_message) {
+            toAcitvity(MessageAcctivity.class);
         } else if (id == R.id.ll_cat) {
             toAcitvity(CarListActivity.class);
         } else if (id == R.id.ll_scan) {

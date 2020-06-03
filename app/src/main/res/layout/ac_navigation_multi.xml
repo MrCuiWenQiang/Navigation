@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.NavigationMultiActivity">
     <com.esri.android.map.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent"/>
     <TextView
         android:id="@+id/tv_xs"
         android:layout_width="wrap_content"
@@ -21,13 +21,17 @@
         android:layout_marginTop="25dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/round"
-        android:gravity="center"
         android:drawableLeft="@mipmap/xs"
+        android:gravity="center"
         android:text="限速XXX"
         android:textColor="@color/red" />
 
+    <include layout="@layout/include_route_info"/>
+    <include layout="@layout/include_status"/>
 
-    <include layout="@layout/include_route_info" />
-
-    <include layout="@layout/include_status" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/lv_data"
+        android:layout_above="@id/ll_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </RelativeLayout>

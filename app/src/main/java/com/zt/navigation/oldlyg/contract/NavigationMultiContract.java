@@ -8,9 +8,9 @@ import com.zt.navigation.oldlyg.model.webbean.XSBean;
 
 import java.util.List;
 
-public class NavigationContract {
+public class NavigationMultiContract {
     public interface View {
-        void queryDirections_Success(RouteResult mResults, Point start, List<Geometry> endPoint);
+        void queryDirections_Success(RouteResult mResults, Point start, Geometry endPoint);
         void queryDirections_Fail(String msg);
 
         void navigation_fail(String msg);
@@ -23,9 +23,9 @@ public class NavigationContract {
     public interface Presenter {
         void queryDirections(Point start, Geometry end, String stopName);
 
-        void navigation(Point start, Geometry end,String stopName);
+        void navigation(Point start, Geometry end, String stopName);
 
-        void updateLocation(double lan,double lon);
+        void updateLocation(double lan, double lon);
     }
 
     public interface Model {

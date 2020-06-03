@@ -43,4 +43,14 @@ public class UrlUtil {
         UrlUtil.netUrl = netUrl;
         PreferencesUtility.setPreferencesField(KEY_URL_NET, netUrl);
     }
+
+    public static String getCarNavi(){
+        String naViurl =null;
+        if (AppSettingUtil.getCatType()){
+            naViurl = Urls.maxNaviUrl;
+        }else {
+            naViurl = Urls.minNaviUrl;
+        }
+        return naViurl;
+    }
 }

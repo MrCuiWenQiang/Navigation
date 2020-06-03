@@ -26,6 +26,7 @@ import com.zt.navigation.oldlyg.view.adapter.CarInfoAdapter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -124,12 +125,12 @@ public class CarInfoActivity extends BaseMVPAcivity<CarInfoContract.View, CarInf
     }
 
     @Override
-    public void searchAddresss_Success(int type, String name, Geometry point) {
-        Intent intent = new Intent(getContext(), NavigationActivity.class);
+    public void searchAddresss_Success(int type, List<String> name, List<Geometry> point) {
+        Intent intent = new Intent(getContext(), NavigationMultiActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable(NavigationActivity.INTENT_KEY_END, point);
-        bundle.putString(NavigationActivity.INTENT_KEY_END_NAME, name);
-        intent.putExtra(NavigationActivity.BUNDLE_NAME, bundle);
+        bundle.putSerializable(NavigationMultiActivity.INTENT_KEY_END, (Serializable) point);
+        bundle.putStringArrayList(NavigationMultiActivity.INTENT_KEY_END_NAME, (ArrayList<String>) name);
+        intent.putExtra(NavigationMultiActivity.BUNDLE_NAME, bundle);
         dimiss();
         startActivityForResult(intent, 520);
     }
@@ -138,13 +139,28 @@ public class CarInfoActivity extends BaseMVPAcivity<CarInfoContract.View, CarInf
     public void onClick(View v) {
         if (v.getId() == R.id.bt_nav) {
             showLoading();
-            CarInfoBean.Address data = carInfoAdapter.getTopData();
+            List<CarInfoBean.Address> data = carInfoAdapter.getData();
             if (data == null) {
                 dimiss();
                 ToastUtility.showToast("没有目的地可导航");
                 return;
             }
-            mPresenter.searchAddress( data.getSTORAGE(),data.getCODE_DEPARTMENT());
+            List<String> names = new ArrayList<>();
+            List<String> codes = new ArrayList<>();
+
+/*            for (CarInfoBean.Address item : data) {
+                names.add(item.getSTORAGE());
+                codes.add(item.getCODE_DEPARTMENT());
+            }*/
+
+           names.add("104场出口");
+            codes.add("77");
+            names.add("802场出口");
+            codes.add("77");
+            names.add("802库出口");
+            codes.add("77");
+
+            mPresenter.searchAddress(names, codes);
         }
     /*    switch (v.getId()) {
             case R.id.bt_nav: {
@@ -152,4 +168,5 @@ public class CarInfoActivity extends BaseMVPAcivity<CarInfoContract.View, CarInf
             }
         }*/
     }
+
 }

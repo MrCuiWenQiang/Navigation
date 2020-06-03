@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/base_item_gg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/item_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/base_item_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="内容:" />
+
+        <TextView
+            android:id="@+id/tv_content"
+            style="@style/item_tt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             />
+    </LinearLayout>
+    <LinearLayout
+        style="@style/item_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/base_item_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发送时间:" />
+
+        <TextView
+            android:id="@+id/tv_pushtime"
+            style="@style/item_tt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+
+
+</LinearLayout>

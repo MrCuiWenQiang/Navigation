@@ -14,7 +14,7 @@ import com.esri.core.tasks.na.RouteResult;
 import com.esri.core.tasks.na.RouteTask;
 import com.esri.core.tasks.na.StopGraphic;
 import com.zt.navigation.oldlyg.Urls;
-import com.zt.navigation.oldlyg.contract.NavigationContract;
+import com.zt.navigation.oldlyg.contract.NavigationMultiContract;
 import com.zt.navigation.oldlyg.model.LocationUploadModel;
 import com.zt.navigation.oldlyg.model.webbean.XSBean;
 import com.zt.navigation.oldlyg.task.AsyncQueryTask;
@@ -32,10 +32,9 @@ import java.util.Set;
 
 import cn.faker.repaymodel.mvp.BaseMVPPresenter;
 import cn.faker.repaymodel.util.FileWUtil;
-import cn.faker.repaymodel.util.LogUtil;
 import cn.faker.repaymodel.util.db.DBThreadHelper;
 
-public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.View> implements NavigationContract.Presenter {
+public class NavigationMultiPresenter extends BaseMVPPresenter<NavigationMultiContract.View> implements NavigationMultiContract.Presenter {
     private RouteTask mRouteTask = null;
 
     private List<StopGraphic> hinderList = null;
@@ -54,8 +53,88 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
 
     }
 
-    private List<XSBean> xsBeans;
+    @Override
+    public void queryDirections(final Point start, final Geometry end, String stopName) {
+        if (mRouteTask == null) {
+            try {
+                mRouteTask = RouteTask
+                        .createOnlineRouteTask(
+                                UrlUtil.getCarNavi(),
+                                null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        hinderList = new ArrayList<>();
+        AsyncQueryTask asyncQueryTask = new AsyncQueryTask();
+        asyncQueryTask.execute(Urls.searchHinderUrl, null, "OBJECTID LIKE '%%'");
+        asyncQueryTask.setOnReturnDataListener(new AsyncQueryTask.OnReturnDataListener() {
+            @Override
+            public void onReturnData(FeatureResult result) {
+                if (result != null) {
+                    Iterator<Object> iterator = result.iterator();
+                    if (iterator.hasNext()) {
+                        while (iterator.hasNext()) {
+                            Feature feature = (Feature) iterator.next();
+//                            Map<String, Object> attributes = feature.getAttributes();
+                            Geometry geometry = feature.getGeometry();
+                            if (geometry != null) {
+                                StopGraphic hinder = new StopGraphic(geometry);
+                                hinderList.add(hinder);
+                            }
+                        }
+                        if (hinderList.size() > 0) {
+                            hinderdatas = hinderList.toArray(new StopGraphic[]{});
+                        }
+                    }
+                }
+                DBThreadHelper.startThreadInPool(new DBThreadHelper.ThreadCallback<RouteResult>() {
+                    @Override
+                    protected RouteResult jobContent() throws Exception {
+                        RouteParameters rp = mRouteTask
+                                .retrieveDefaultRouteTaskParameters();
+                        NAFeaturesAsFeature rfaf = new NAFeaturesAsFeature();
+                        MapUtil.movenPoint(start);
+                        StopGraphic point1 = new StopGraphic(start);
+                        point1.setName("当前位置");
 
+                    /*    Graphic[] points = new Graphic[ends.size()+1];
+                        points[0]=point1;
+                        int i = 1;
+                        for (Geometry item :ends) {
+                            StopGraphic point2 = new StopGraphic(item);
+                            point2.setName(stopName);
+                            points[i] = point2;
+                            i++;
+                        }*/
+                        StopGraphic point2 = new StopGraphic(end);
+                        point1.setName(stopName);
+
+                        rfaf.setFeatures( new Graphic[]{point1,point2});
+                        rp.setReturnDirections(true);
+                        rp.setStops(rfaf);
+                        rp.setOutSpatialReference(wm);
+                        if (hinderList.size() > 0) {
+                            NAFeaturesAsFeature hindf = new NAFeaturesAsFeature();
+                            hindf.addFeatures(hinderdatas);
+                            rp.setPointBarriers(hindf);
+                        }
+                        return mRouteTask.solve(rp);
+                    }
+
+                    @Override
+                    protected void jobEnd(RouteResult o) {
+                        if (o == null) {
+                            getView().queryDirections_Fail("算路失败:无法规划路线");
+                        } else {
+                            getView().queryDirections_Success(o, start, end);
+                        }
+                    }
+                });
+            }
+        });
+
+    }
     /**
      * 只在第一次加载才获取网络资源
      *
@@ -110,6 +189,7 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
         });
     }
 
+    private List<XSBean> xsBeans;
     /**
      * 计算距离最近的点
      * @param point
@@ -132,100 +212,7 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
     }
 
     @Override
-    public void queryDirections(final Point start, final Geometry end, String stopName) {
-        ArrayList list = new ArrayList<Geometry>();
-        list.add(end);
-        queryDirections(start, list, stopName);
-    }
-
-    public void queryDirections(final Point start, final List<Geometry> ends, String stopName) {
-        if (mRouteTask == null) {
-            try {
-                mRouteTask = RouteTask
-                        .createOnlineRouteTask(
-                                UrlUtil.getCarNavi(),
-                                null);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        hinderList = new ArrayList<>();
-        AsyncQueryTask asyncQueryTask = new AsyncQueryTask();
-        asyncQueryTask.execute(Urls.searchHinderUrl, null, "OBJECTID LIKE '%%'");
-        asyncQueryTask.setOnReturnDataListener(new AsyncQueryTask.OnReturnDataListener() {
-            @Override
-            public void onReturnData(FeatureResult result) {
-                if (result != null) {
-                    Iterator<Object> iterator = result.iterator();
-                    if (iterator.hasNext()) {
-                        while (iterator.hasNext()) {
-                            Feature feature = (Feature) iterator.next();
-//                            Map<String, Object> attributes = feature.getAttributes();
-                            Geometry geometry = feature.getGeometry();
-                            if (geometry != null) {
-                                StopGraphic hinder = new StopGraphic(geometry);
-                                hinderList.add(hinder);
-                            }
-                        }
-                        if (hinderList.size() > 0) {
-                            hinderdatas = hinderList.toArray(new StopGraphic[]{});
-                        }
-                    }
-                }
-                DBThreadHelper.startThreadInPool(new DBThreadHelper.ThreadCallback<RouteResult>() {
-                    @Override
-                    protected RouteResult jobContent() throws Exception {
-                        RouteParameters rp = mRouteTask
-                                .retrieveDefaultRouteTaskParameters();
-                        NAFeaturesAsFeature rfaf = new NAFeaturesAsFeature();
-                        MapUtil.movenPoint(start);
-                        StopGraphic point1 = new StopGraphic(start);
-                        point1.setName("当前位置");
-
-                        Graphic[] points = new Graphic[ends.size() + 1];
-                        points[0] = point1;
-                        int i = 1;
-                        for (Geometry item : ends) {
-                            StopGraphic point2 = new StopGraphic(item);
-                            point2.setName(stopName);
-                            points[i] = point2;
-                            i++;
-                        }
-
-                        rfaf.setFeatures(points);
-                        rp.setReturnDirections(true);
-                        rp.setStops(rfaf);
-                        rp.setOutSpatialReference(wm);
-                        if (hinderList.size() > 0) {
-                            NAFeaturesAsFeature hindf = new NAFeaturesAsFeature();
-                            hindf.addFeatures(hinderdatas);
-                            rp.setPointBarriers(hindf);
-                        }
-                        return mRouteTask.solve(rp);
-                    }
-
-                    @Override
-                    protected void jobEnd(RouteResult o) {
-                        if (o == null) {
-                            getView().queryDirections_Fail("算路失败:无法规划路线");
-                        } else {
-                            getView().queryDirections_Success(o, start, ends);
-                        }
-                    }
-                });
-            }
-        });
-
-    }
-
-    @Override
     public void navigation(Point start, Geometry end, String stopName) {
-        ArrayList list = new ArrayList<Geometry>();
-        list.add(end);
-        navigation(start, list, stopName);
-    }
-
-    public void navigation(Point start, List<Geometry> ends, String stopName) {
         findXS(start);
         if (mRouteTask == null) {
             try {
@@ -246,16 +233,19 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
                 MapUtil.movenPoint(start);
                 StopGraphic point1 = new StopGraphic(start);
                 point1.setName("当前位置");
-                Graphic[] points = new Graphic[ends.size() + 1];
-                points[0] = point1;
+             /*   Graphic[] points = new Graphic[ends.size()+1];
+                points[0]=point1;
                 int i = 1;
-                for (Geometry item : ends) {
+                for (Geometry item :ends) {
                     StopGraphic point2 = new StopGraphic(item);
                     point2.setName(stopName);
                     points[i] = point2;
                     i++;
-                }
-                rfaf.setFeatures(points);
+                }*/
+                StopGraphic point2 = new StopGraphic(end);
+                point1.setName(stopName);
+
+                rfaf.setFeatures( new Graphic[]{point1,point2});
                 rp.setReturnDirections(true);
                 rp.setStops(rfaf);
                 rp.setOutSpatialReference(wm);

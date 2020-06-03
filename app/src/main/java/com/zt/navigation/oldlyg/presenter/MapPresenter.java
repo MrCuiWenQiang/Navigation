@@ -25,6 +25,7 @@ import com.zt.navigation.oldlyg.task.AsyncQueryTask;
 import com.zt.navigation.oldlyg.util.MapUtil;
 import com.zt.navigation.oldlyg.util.TokenManager;
 import com.zt.navigation.oldlyg.util.TpkUtil;
+import com.zt.navigation.oldlyg.util.UrlUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,14 +74,32 @@ public class MapPresenter extends BaseMVPPresenter<MapContract.View> implements 
 
     private LocationUploadModel uploadModel = new LocationUploadModel();
 
+    private boolean isPause = true;
+
     @Override
     public void updateLocation(double lan, double lon) {
+        if (!isPause){
+            return;
+        }
+        isPause = false;
         uploadModel.upload(TokenManager.token, lon, lan, null);
         if (!isUpload && !isShowUpload) {
-            if (MapUtil.isHave(lan, lon)) {
-                getView().showArrive("你已到达港区,点击上报");
-                isShowUpload = true;
-            }
+
+            MapUtil.isHave(lan, lon, new HttpResponseCallback() {
+                @Override
+                public void onSuccess(String data) {
+                    if (Boolean.valueOf(data)){
+                        getView().showArrive("你已到达港区,点击上报");
+                        isShowUpload = true;
+                    }
+                    isPause = true;
+                }
+
+                @Override
+                public void onFailed(int status, String message) {
+                    isPause = true;
+                }
+            });
         }
     }
 
@@ -113,7 +132,7 @@ public class MapPresenter extends BaseMVPPresenter<MapContract.View> implements 
             try {
                 mRouteTask = RouteTask
                         .createOnlineRouteTask(
-                                Urls.mapNaviUrl,
+                                UrlUtil.getCarNavi(),
                                 null);
             } catch (Exception e) {
                 e.printStackTrace();

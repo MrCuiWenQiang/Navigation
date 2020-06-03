@@ -114,12 +114,14 @@ public class PreferencesUtility {
      * @return 值
      */
     public static boolean getPreferencesAsBoolean(String fieldName) {
+        return getPreferencesAsBoolean(fieldName,false);
+    }
+    public static boolean getPreferencesAsBoolean(String fieldName,boolean v) {
         SharedPreferences preferences = context.getSharedPreferences(fileName,
                 Context.MODE_PRIVATE);
-        boolean value = preferences.getBoolean(fieldName, false);
+        boolean value = preferences.getBoolean(fieldName, v);
         return value;
     }
-
     /***
      * 获取相应字段名下的浮点型
      *

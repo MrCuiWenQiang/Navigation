@@ -1,6 +1,7 @@
 package com.zt.navigation.oldlyg.presenter;
 
 
+import android.nfc.tech.NfcA;
 import android.text.TextUtils;
 
 import com.esri.core.geometry.Geometry;
@@ -20,6 +21,7 @@ import com.zt.navigation.oldlyg.task.AsyncQueryTask;
 import com.zt.navigation.oldlyg.util.TokenManager;
 import com.zt.navigation.oldlyg.view.SearchActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -105,28 +107,25 @@ public class CarInfoPresenter extends BaseMVPPresenter<CarInfoContract.View> imp
 
     }*/
 
-    public void searchAddress(String name, String code) {
+    public void searchAddress(List<String> names, List<String> codes) {
 
         AsyncQueryTask asyncQueryTask = new AsyncQueryTask();
 //        asyncQueryTask.execute(Urls.searchUrl + "/19", null, "name ='" + "4号磅" + "' AND GSBM  = '" + "191" + "'");
-        asyncQueryTask.execute(Urls.searchUrl + "/64", null, "UNAME ='" + name + "' AND GKZYQDM  = '" + code + "'");
+//        asyncQueryTask.execute(Urls.searchUrl + "/64", null, splitSQL(names, codes));
+        asyncQueryTask.execute(Urls.searchUrl + "/19", null, splitSQL(names, codes));
         asyncQueryTask.setOnReturnDataListener(new AsyncQueryTask.OnReturnDataListener() {
             @Override
             public void onReturnData(FeatureResult result) {
                 if (result != null) {
                     Iterator<Object> iterator = result.iterator();
                     if (iterator.hasNext()) {
-                        Feature feature = (Feature) iterator.next();
-                        Geometry geometry = feature.getGeometry();
-                  /*      if (geometry instanceof MultiPath){
-                            MultiPath data = (MultiPath) geometry;
-                            if (data.getPointCount()<=0){
-                                getView().searchAddresss_Fail(1, "该地点未有坐标");
-                                return;
-                            }
-                            geometry  =data.getPoint(0);
-                        }*/
-                        getView().searchAddresss_Success(1, name, geometry);
+                        List<Geometry> geometrys = new ArrayList<>();
+                        while (iterator.hasNext()) {
+                            Feature feature = (Feature) iterator.next();
+                            Geometry geometry = feature.getGeometry();
+                            geometrys.add(geometry);
+                        }
+                        getView().searchAddresss_Success(1, names, geometrys);
                     } else {
                         getView().searchAddresss_Fail(1, "未查询到数据");
                     }
@@ -137,4 +136,21 @@ public class CarInfoPresenter extends BaseMVPPresenter<CarInfoContract.View> imp
         });
     }
 
+//    String sql = "UNAME ='$name' AND GKZYQDM  = '$code'";
+    String sql = "NAME ='$name' AND GSBM  = '$code'";
+
+    private String splitSQL(List<String> names, List<String> codes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < names.size(); i++) {
+            if (i != 0) {
+                sb.append(" OR ");
+            }
+            String name = names.get(i);
+            String code = codes.get(i);
+            String o = sql.replace("$name", name);
+            String t = o.replace("$code", code);
+            sb.append(t);
+        }
+        return sb.toString();
+    }
 }

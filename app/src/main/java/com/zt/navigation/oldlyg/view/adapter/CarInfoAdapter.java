@@ -24,7 +24,9 @@ public class CarInfoAdapter extends RecyclerView.Adapter<CarInfoAdapter.ViewHold
     public CarInfoBean.Address getTopData(){
         return data==null||data.size()<=0?null:data.get(0);
     }
-
+    public List<CarInfoBean.Address> getData(){
+        return data;
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {

@@ -8,7 +8,8 @@ import android.location.LocationListener;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -31,11 +32,12 @@ import com.esri.core.tasks.na.RouteResult;
 import com.zt.navigation.oldlyg.MyApplication;
 import com.zt.navigation.oldlyg.R;
 import com.zt.navigation.oldlyg.Urls;
-import com.zt.navigation.oldlyg.contract.NavigationContract;
+import com.zt.navigation.oldlyg.contract.NavigationMultiContract;
 import com.zt.navigation.oldlyg.model.webbean.XSBean;
-import com.zt.navigation.oldlyg.presenter.NavigationPresenter;
+import com.zt.navigation.oldlyg.presenter.NavigationMultiPresenter;
 import com.zt.navigation.oldlyg.tts.BDTTS;
 import com.zt.navigation.oldlyg.util.AppSettingUtil;
+import com.zt.navigation.oldlyg.view.adapter.StopsAdapter;
 import com.zt.navigation.oldlyg.view.include.MainRouceListInclude;
 import com.zt.navigation.oldlyg.view.include.NaviceStatusInclude;
 
@@ -45,7 +47,12 @@ import java.util.List;
 import cn.faker.repaymodel.mvp.BaseMVPAcivity;
 import cn.faker.repaymodel.util.ToastUtility;
 
-public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, NavigationPresenter> implements NavigationContract.View {
+/**
+ * 多路线导航 用于派车单 多路线
+ *
+ * 思路因为多个目的地无法精确判断是否到达  提供多目的地选择
+ */
+public class NavigationMultiActivity extends BaseMVPAcivity<NavigationMultiContract.View, NavigationMultiPresenter> implements NavigationMultiContract.View {
 
     public static final String INTENT_KEY_END_NAME = "INTENT_KEY_END_NAME";
     public static final String INTENT_KEY_END = "INTENT_KEY_END";
@@ -62,19 +69,23 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
 
     private BDTTS bdtts = new BDTTS();
 
-    private TextView tv_xs;
     private MapView mMapView;
-    private String end_name;//终点名称
-    private Geometry end_point;//终点
+    private List<String> end_name;//终点名称
+    private List<Geometry> end_point;//终点
+    private Geometry end_point_now;//终点
+    private String end_name_now;//终点名称
     private boolean isNai;
     private int nav_id = -1;//图层id
+    private TextView tv_xs;
+    private RecyclerView lv_data;
+    private StopsAdapter stopsAdapter;
 
     private LocationDisplayManager locationDisplayManager;
     private AudioManager audioManager;
 
     @Override
     protected int getLayoutContentId() {
-        return R.layout.ac_navigation;
+        return R.layout.ac_navigation_multi;
     }
 
     @Override
@@ -84,7 +95,10 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
         changStatusIconCollor(false);
 
         mMapView = findViewById(R.id.mapview);
-        tv_xs = findViewById(R.id.tv_xs);
+        lv_data = findViewById(R.id.lv_data);
+        lv_data.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+        stopsAdapter = new StopsAdapter();
+        lv_data.setAdapter(stopsAdapter);
     }
 
     @Override
@@ -101,10 +115,13 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
 
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra(BUNDLE_NAME);
-        end_name = bundle.getString(INTENT_KEY_END_NAME);
-        end_point = (Geometry) bundle.getSerializable(INTENT_KEY_END);
+        end_name = bundle.getStringArrayList(INTENT_KEY_END_NAME);
+        end_point = (List<Geometry>) bundle.getSerializable(INTENT_KEY_END);
+        end_point_now = end_point.get(0);
+        end_name_now = end_name.get(0);
         showLoading();
-        mPresenter.queryDirections(MyApplication.startPoint, end_point, end_name);
+        stopsAdapter.setEnd_name(end_name);
+        mPresenter.queryDirections(MyApplication.startPoint,end_point_now , end_name_now);//默认导航到第一个
         bdtts.init(getContext(), new Handler());//暂时不接收信息
     }
 
@@ -130,7 +147,18 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
                 naviceStatusInclude.off();
                 mGraphicsLayer.removeAll();
                 hiddenSegmentsLayer.removeAll();
-                tv_xs.setVisibility(View.GONE);
+                showLoading();
+                lv_data.setVisibility(View.VISIBLE);
+                mPresenter.queryDirections(MyApplication.startPoint,end_point_now , end_name_now);
+            }
+        });
+        stopsAdapter.setListener(new StopsAdapter.OnItemClickListener() {
+            @Override
+            public void onclick(int postion) {
+                end_point_now = end_point.get(postion);
+                end_name_now = end_name.get(postion);
+                showLoading();
+                mPresenter.queryDirections(MyApplication.startPoint,end_point_now , end_name_now);//默认导航到第一个
             }
         });
     }
@@ -149,7 +177,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
                     double lat = location.getLatitude();//纬度
                     double lon = location.getLongitude();//经度
                     if (isNai) {
-                        mPresenter.navigation(new Point(lon, lat), end_point, end_name);
+                        mPresenter.navigation(new Point(lon, lat), end_point_now, end_name_now);
                         mMapView.setExtent(new Point(lon, lat), 250);
                     }
                     mPresenter.updateLocation(lat, lon);
@@ -184,6 +212,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
             mMapView.addLayer(topGISTiledMapServiceLayer);
             ArcGISDynamicMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.mapUrl);
             mMapView.addLayer(arcGISTiledMapServiceLayer);
+
         }
         hiddenSegmentsLayer = new GraphicsLayer();
         mMapView.addLayer(hiddenSegmentsLayer);
@@ -192,8 +221,10 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
     }
 
     @Override
-    public void queryDirections_Success(RouteResult mResults, Point startPoint, List<Geometry> endPoint) {
+    public void queryDirections_Success(RouteResult mResults, Point startPoint, Geometry endPoint) {
+
         hiddenSegmentsLayer.removeAll();
+        mGraphicsLayer.removeAll();
         Route curRoute = mResults.getRoutes().get(0);
         SimpleLineSymbol routeSymbol = new SimpleLineSymbol(Color.BLUE, 3);
         PictureMarkerSymbol startd = new PictureMarkerSymbol(
@@ -227,8 +258,9 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
         rouceListInclude.setData(curRoute, new MainRouceListInclude.OnClickStartNai() {
             @Override
             public void start() {
+
                 showLoading();
-                mPresenter.navigation(startPoint, endPoint, end_name);
+                mPresenter.navigation(startPoint, end_point_now, end_name_now);
             }
         });
         dimiss();
@@ -264,6 +296,13 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
         }
         naviceStatusInclude.setData(msg);
         bdtts.speak(msg);
+        lv_data.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // TODO: 2020/5/21 两个导航页面都要对back key改造
+        finish();
     }
 
     @Override

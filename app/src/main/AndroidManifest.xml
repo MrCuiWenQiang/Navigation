@@ -62,11 +62,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.MessageAcctivity" />
         <activity android:name=".view.SearchActivity" />
         <activity android:name=".view.AddressListActivity" />
         <activity android:name=".view.NavigationActivity" />
         <activity android:name=".view.SettingActivity" />
         <activity android:name=".view.FeedbackActivity" />
+        <activity android:name=".view.NavigationMultiActivity" />
         <activity android:name=".view.CarListActivity" />
         <activity android:name=".view.CarInfoActivity" />
         <!--<activity android:name=".view.LoginActivity" />-->
