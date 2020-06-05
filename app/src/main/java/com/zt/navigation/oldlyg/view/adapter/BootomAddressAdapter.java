@@ -10,9 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zt.navigation.oldlyg.R;
+import com.zt.navigation.oldlyg.util.NominateUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cn.faker.repaymodel.widget.view.BaseRecycleView;
 
@@ -30,11 +33,14 @@ public class BootomAddressAdapter extends RecyclerView.Adapter<BootomAddressAdap
         this.cityAddresss = cityAddresss;
     }
 
+    // TODO: 2020/6/5 因索引值原因不再使用list的数据 转而使用map的set  key集合
     public void setData(List<String> suggestResults, Map<String, Point> search_Data) {
         if (this.suggestResults == null && suggestResults == null) {
             return;
         }
-        this.suggestResults = suggestResults;
+        Set<String> set = search_Data.keySet();
+        List<String> d = new ArrayList<>(set);
+        this.suggestResults = d;
         this.search_Data = search_Data;
         notifyDataSetChanged();
     }
@@ -57,7 +63,7 @@ public class BootomAddressAdapter extends RecyclerView.Adapter<BootomAddressAdap
             String city = cityAddresss.get(i);
             viewHolder.tv_address.setText(city);
         }
-        viewHolder.tv_title.setText(text);
+        viewHolder.tv_title.setText(NominateUtil.tofindName(text));
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

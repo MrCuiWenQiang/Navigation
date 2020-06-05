@@ -9,8 +9,9 @@ public class Urls {
     public static final String mapUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/路网服务/MapServer";//LYG测试
 //    public static final String mapUrl = "http://192.168.1.13:6080/arcgis/rest/services/lyg0508/MapServer";//LYG测试
 
-    //    public static final String topMapUrl = UrlUtil.getGisUrl()+"/arcgis/rest/services/lianyungang_tdt/MapServer";//叠加图层 所有地图都要叠加
-    public static final String topMapUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/lyg_tdt529/MapServer";//叠加图层 所有地图都要叠加
+        public static final String topMapUrl = UrlUtil.getGisUrl()+"/arcgis/rest/services/lianyungang_tdt2/MapServer";//叠加图层 所有地图都要叠加
+//        public static final String topMapUrl = UrlUtil.getGisUrl()+"/arcgis/rest/services/lianyungang_tdt/MapServer";//叠加图层 所有地图都要叠加
+//    public static final String topMapUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/lyg_tdt529/MapServer";//叠加图层 所有地图都要叠加
 
     public static final String searchUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/路网服务/MapServer";//LYG测试
 //      public static final String searchUrl="http://192.168.1.13:6080/arcgis/rest/services/lyg0508/MapServer";//JN

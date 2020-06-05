@@ -79,6 +79,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     private LinearLayout ll_local;
     private LinearLayout ll_task;
 
+
     private BroadcastReceiver receiver;
 
     private boolean isOne = false;//第一次进入 定位缩放自身
@@ -113,6 +114,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         ll_scan = findViewById(R.id.ll_scan);
         ll_task_help = findViewById(R.id.ll_task_help);
         ll_task = findViewById(R.id.ll_task);
+
     }
 
 
@@ -207,6 +209,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
             ArcGISDynamicMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.mapUrl);
             ArcGISDynamicMapServiceLayer topGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.topMapUrl);
             layerTopIndex = mMapView.addLayer(topGISTiledMapServiceLayer);
+
             layerIndex = mMapView.addLayer(arcGISTiledMapServiceLayer);
         }
     }
@@ -301,10 +304,11 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
                     lat = location.getLatitude();//纬度
                     lon = location.getLongitude();//经度
                     if (isOne) {
-                        mMapView.zoomTo(new Point(lon, lat), 10);
+                        mMapView.zoomTo(new Point(lon, lat), 250);
                         isOne = false;
                     }
                     mPresenter.updateLocation(lat, lon);
+
                     MyApplication.startPoint = new Point(lon, lat);
                 }
             }
@@ -517,26 +521,9 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         showDialog(name);
     }
 
-    @Override
-    public void showArrive(String msg) {
-        showCanaelDialog(msg, true, new QMUIDialogAction.ActionListener() {
-            @Override
-            public void onClick(QMUIDialog dialog, int index) {
-                dialog.dismiss();
-                mPresenter.uploadArrive();
-            }
-        });
-    }
 
-    @Override
-    public void uploadArriveSuccess(String msg) {
-        ToastUtility.showToast(msg);
-    }
 
-    @Override
-    public void uploadArriveFail(String msg) {
-        ToastUtility.showToast(msg);
-    }
+
 
     @Override
     public void toGetHinder_Success(String msg) {
@@ -556,5 +543,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         });
         bdtts.speak(msg);
     }
+
+
 
 }

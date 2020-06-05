@@ -20,17 +20,22 @@ import cn.faker.repaymodel.widget.view.BaseRecycleView;
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHolder> {
 
     private List<String> suggestResults;
-    private BaseRecycleView.OnItemClickListener<String> onItemClickListener;
+    private List<String> cityAddress;
+    private BaseRecycleView.OnItemClickListener<String[]> onItemClickListener;
 
-    public void setSuggestResults(List<String> suggestResults) {
+    public void setSuggestResults(List<String> suggestResults,List<String> cityAddress) {
+  /*      if ( this.suggestResults==null&&suggestResults==null){
+            return;
+        }*/
         if ( this.suggestResults==null&&suggestResults==null){
             return;
         }
         this.suggestResults = suggestResults;
+        this.cityAddress = cityAddress;
         notifyDataSetChanged();
     }
 
-    public void setOnItemClickListener(BaseRecycleView.OnItemClickListener<String> onItemClickListener) {
+    public void setOnItemClickListener(BaseRecycleView.OnItemClickListener<String[]> onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
@@ -45,15 +50,16 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
 
         final String result = suggestResults.get(i);
+        final String address = cityAddress.get(i);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onItemClickListener!=null){
-                    onItemClickListener.onItemClick(viewHolder.itemView,result,i);
+                    onItemClickListener.onItemClick(viewHolder.itemView,new String[]{result,address},i);
                 }
             }
         });
-        viewHolder.tv_title.setText(result);
+        viewHolder.tv_title.setText(result+"/"+address);
     }
 
     @Override

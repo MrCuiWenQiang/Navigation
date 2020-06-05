@@ -11,7 +11,7 @@
     <com.esri.android.map.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></com.esri.android.map.MapView>
+        android:layout_height="match_parent"/>
 
     <TextView
         android:id="@+id/tv_search"
@@ -32,17 +32,20 @@
 
     <LinearLayout
         android:id="@+id/ll_local"
-        android:background="@drawable/open_click_select"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="15dp"
         android:padding="3dp"
+        android:background="@drawable/open_click_select"
+        android:orientation="vertical"
         android:layout_above="@id/ll_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <ImageView
-            android:src="@mipmap/location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+
+
+            <ImageView
+                android:src="@mipmap/location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
     </LinearLayout>
 
 </RelativeLayout>

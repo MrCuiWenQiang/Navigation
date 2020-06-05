@@ -18,8 +18,8 @@ import cn.faker.repaymodel.util.error.ErrorUtil;
 public class TpkUtil {
     //路径为 /sd卡路径
     public static final String appName = "NavigationMap";
-    public static final String name = "lianyungang_dxt.tpk";
-    public static final String ZIPName = "lianyungang_dxt.zip";
+    public static final String name = "lianyungang_dxt1.tpk";
+    public static final String ZIPName = "lianyungang_dxt1.zip";
 
     private static String mapFilePath;
     private static String mapFileFathPath;

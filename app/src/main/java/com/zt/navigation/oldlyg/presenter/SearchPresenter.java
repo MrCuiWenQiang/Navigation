@@ -2,6 +2,9 @@ package com.zt.navigation.oldlyg.presenter;
 
 import android.text.TextUtils;
 
+import com.esri.core.geometry.Geometry;
+import com.esri.core.geometry.Point;
+import com.esri.core.map.Feature;
 import com.esri.core.map.FeatureResult;
 import com.esri.core.tasks.ags.find.FindParameters;
 import com.esri.core.tasks.ags.find.FindResult;
@@ -10,6 +13,7 @@ import com.zt.navigation.oldlyg.Urls;
 import com.zt.navigation.oldlyg.contract.SearchContract;
 import com.zt.navigation.oldlyg.model.bean.HistoryBean;
 import com.zt.navigation.oldlyg.task.AsyncQueryTask;
+import com.zt.navigation.oldlyg.util.NominateUtil;
 import com.zt.navigation.oldlyg.view.SearchActivity;
 
 import java.util.ArrayList;
@@ -17,10 +21,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cn.faker.repaymodel.mvp.BaseMVPPresenter;
 import cn.faker.repaymodel.net.json.JsonUtil;
+import cn.faker.repaymodel.util.LogUtil;
 import cn.faker.repaymodel.util.PreferencesUtility;
+import cn.faker.repaymodel.util.UUIDUtil;
 import cn.faker.repaymodel.util.db.DBThreadHelper;
 
 public class SearchPresenter extends BaseMVPPresenter<SearchContract.View> implements SearchContract.Presenter {
@@ -79,97 +86,139 @@ public class SearchPresenter extends BaseMVPPresenter<SearchContract.View> imple
         getView().queryHistory(historyBeans);
     }
 
+    String[] fields = new String[]{"name", "ZGGSDM"};
+    //    String condition ;
+    int[] layerIds = new int[]{19, 20, 21, 22, 29, 33, 34, 36, 37, 38, 39, 64};
+
+    /*   @Override
+       public void search(final int type, String text) {
+           if (TextUtils.isEmpty(text)) {
+               getView().search_Fail(type, "请输入地点");
+               return;
+           }
+           // TODO: 2020/3/16 更换全图层查询  searchFromLayers
+           if (type == SearchActivity.QUERY_TYPE_OK) {
+               addHistory(text);
+               queryHistory();
+           }
+           final FindTask findTask = new FindTask(Urls.searchUrl);
+           final FindParameters findParameters = new FindParameters();
+           findParameters.setLayerIds(layerIds);
+           findParameters.setReturnGeometry(true); //允许返回几何图形
+           findParameters.setSearchText(text); // 设置查询关键字--必须设置
+           findParameters.setSearchFields(fields); // 设置查询字段的名称
+           DBThreadHelper.startThreadInPool(new DBThreadHelper.ThreadCallback<List<FindResult>>() {
+
+               @Override
+               protected List<FindResult> jobContent() throws Exception {
+                   return findTask.execute(findParameters);
+               }
+
+               @Override
+               protected void jobEnd(List<FindResult> findResults) {
+                   if (findResults != null) {
+                       if (findResults.size()>0) {
+                           getView().search_Success(type, findResults);
+                       } else {
+                           getView().search_Fail(type, "未查询到数据");
+                       }
+                   } else {
+   //                    getView().search_Fail(type, "查询失败");
+                       getView().search_Fail(type, "未查询到数据");
+                   }
+               }
+           });
+
+       }*/
     @Override
     public void search(final int type, String text) {
+        search(type, text, null);
+    }
+
+    public void search(final int type, String text, String gsmc) {
         if (TextUtils.isEmpty(text)) {
-            getView().search_Fail(type, "请输入地点");
+            getView().search_Fail(type, "");
             return;
         }
-        // TODO: 2020/3/16 更换全图层查询  searchFromLayers
+        String sql ;
+        if ((type == SearchActivity.QUERY_TYPE_OK || type == SearchActivity.QUERY_TYPE_OK_HIST)
+                && !TextUtils.isEmpty(gsmc)) {
+            sql = splitSQL(text,gsmc);
+
+        }else {
+            sql = splitSQL(text);
+        }
         if (type == SearchActivity.QUERY_TYPE_OK) {
             addHistory(text);
             queryHistory();
         }
-        final FindTask findTask = new FindTask(Urls.searchUrl);
-        final FindParameters findParameters = new FindParameters();
-        findParameters.setLayerIds(layerIds);
-        findParameters.setReturnGeometry(true); //允许返回几何图形
-        findParameters.setSearchText(text); // 设置查询关键字--必须设置
-        findParameters.setSearchFields(fields); // 设置查询字段的名称
-        DBThreadHelper.startThreadInPool(new DBThreadHelper.ThreadCallback<List<FindResult>>() {
-
+        AsyncQueryTask asyncQueryTask = new AsyncQueryTask();
+        asyncQueryTask.execute(Urls.searchUrl + "/19", null, sql);
+        asyncQueryTask.setOnReturnDataListener(new AsyncQueryTask.OnReturnDataListener() {
             @Override
-            protected List<FindResult> jobContent() throws Exception {
-                return findTask.execute(findParameters);
-            }
+            public void onReturnData(FeatureResult result) {
+                if (result != null) {
+                    Iterator<Object> iterator = result.iterator();
+                    if (iterator.hasNext()) {
+                        Map<String, Point> search_Data = new HashMap<>();
+                        ArrayList<String> names = new ArrayList<>();
+                        ArrayList<String> cityAddress = new ArrayList<>();
 
-            @Override
-            protected void jobEnd(List<FindResult> findResults) {
-                if (findResults != null) {
-                    if (findResults.size()>0) {
-                        getView().search_Success(type, findResults);
+                        while (iterator.hasNext()) {
+                            Feature feature = (Feature) iterator.next();
+                            Map<String, Object> attributes = feature.getAttributes();
+                            Set<String> set = attributes.keySet();
+
+                            Geometry geometry = feature.getGeometry();
+                            String name = null;
+                            String gsmc = null;
+                            for (String key : set) {
+                                if (key.equals("NAME")) {
+                                    name = attributes.get(key) == null ? null : String.valueOf(attributes.get(key));
+
+                                } else if (key.equals("GSMC")) {
+                                    gsmc = attributes.get(key) == null ? null : String.valueOf(attributes.get(key));
+                                }
+                            }
+                            if (TextUtils.isEmpty(name) || TextUtils.isEmpty(gsmc)) {
+                                continue;
+                            } else {
+                                names.add(name);
+                                cityAddress.add(gsmc);
+                                // TODO: 2020/6/5 有键名重复的可能性  展示的时候将其变为独特，唯一
+                                if (search_Data.containsKey(name)){
+                                    name = NominateUtil.contName(name);
+                                }
+
+                                search_Data.put(name, (Point) geometry);
+                            }
+                        }
+                        if (getView() != null) {
+                            getView().search_Success(type, search_Data, names, cityAddress);
+                        }
                     } else {
                         getView().search_Fail(type, "未查询到数据");
                     }
                 } else {
-//                    getView().search_Fail(type, "查询失败");
                     getView().search_Fail(type, "未查询到数据");
                 }
             }
         });
-
     }
 
+    //    String sql = "UNAME ='$name' AND GKZYQDM  = '$code'";
+    String sql = "NAME like '%$name%' OR GSMC  like '%$gsmc%'";
+    String sql_W = "NAME = '$name' And GSMC  = '$gsmc'";
 
-    String[] fields = new String[]{"name","ZGGSDM"};
-    //    String condition ;
-    int[] layerIds = new int[]{19, 20,21,22,29,33,34,36,37,38,39,64};
-
-    /**
-     * 根据条件搜索, 供给RightMenuFragment使用,多图层一起查询
-     *
-//     * @param condition   // 查询条件
-     * @param searchKey// 查询关键字 （设置查询参数的时候必须设置）
-//     * @param fields      // 待查询的字段名称 数组
-//     * @param layerIds    // 查询服务的子图层的id数组
-//     * @param findLayer   // 待查询的服务URL
-     */
-    /*public void searchFromLayers(String searchKey) {
-
-        final FindTask findTask = new FindTask(Urls.searchUrl);
-        final FindParameters findParameters = new FindParameters();
-        findParameters.setLayerIds(layerIds);//默认查询全部图层
-
-        if (fields.length == 1) {
-            findParameters.setReturnGeometry(true); //允许返回几何图形
-            findParameters.setSearchText(searchKey); // 设置查询关键字--必须设置
-            findParameters.setSearchFields(fields); // 设置查询字段的名称
-        } else {
-//            Map<Integer,String> parmMap = new HashMap<>();
-//            for (int a : layerIds){
-//                parmMap.put(a,condition);  // 设置每个子图层的 查询过滤条件
-//            }
-
-//            findParameters.setLayerDefs(parmMap);
-
-        }
-        findParameters.setReturnGeometry(true);
-        findParameters.setSearchText(searchKey);
-        findParameters.setSearchFields(fields);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    List<FindResult> res = findTask.execute(findParameters);
-                    if (res != null) {
-
-                    }
-                    // res就是查询到的结果 List<FindResult>
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+    private String splitSQL(String value) {
+        String o = sql.replace("$name", value);
+        String t = o.replace("$gsmc", value);
+        return t;
     }
-*/}
+
+    private String splitSQL(String value,String gsmc) {
+        String o = sql_W.replace("$name", value);
+        String t = o.replace("$gsmc", gsmc);
+        return t;
+    }
+}

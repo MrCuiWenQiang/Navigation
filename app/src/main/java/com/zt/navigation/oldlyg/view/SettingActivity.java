@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
+import com.zt.navigation.oldlyg.MyApplication;
 import com.zt.navigation.oldlyg.R;
 
 import com.zt.navigation.oldlyg.contract.SettingContract;
@@ -23,8 +24,8 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
 
     private String[] item_one_name = new String[]{"路线模式", "地图模式"};
     private int[] one_ids = new int[]{R.id.one_1, R.id.one_2};
-    private String[] item_two_name = new String[]{"车辆设置", "网络设置", "地图资源", "版本更新"};
-    private int[] two_ids = new int[]{R.id.two_1, R.id.two_2, R.id.two_3, R.id.two_4};
+    private String[] item_two_name = new String[]{"到达上报","车辆设置", "网络设置", "地图资源", "版本更新"};
+    private int[] two_ids = new int[]{R.id.ddupdate,R.id.two_1, R.id.two_2, R.id.two_3, R.id.two_4};
     private String[] item_three_name = new String[]{"意见反馈", "使用说明"};
     private int[] three_ids = new int[]{R.id.three_1, R.id.three_2};
     private String[] item_one_describe;
@@ -110,6 +111,13 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
         } else if (id == R.id.three_1) {
             toAcitvity(FeedbackActivity.class);
         } else if (id == R.id.three_2) {
+        }else if (id == R.id.ddupdate) {
+            if (MyApplication.startPoint!=null){
+                showLoading();
+                mPresenter.updateLocation(MyApplication.startPoint.getX(),MyApplication.startPoint.getY());
+            }else {
+                showDialog("未开启定位");
+            }
         }
     }
 
@@ -160,6 +168,24 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
 
     @Override
     public void settingUser_Fail(String msg) {
+        dimiss();
+        ToastUtility.showToast(msg);
+    }
+
+    @Override
+    public void uploadArriveSuccess(String msg) {
+        dimiss();
+        ToastUtility.showToast(msg);
+    }
+
+    @Override
+    public void uploadArriveFail(String msg) {
+        dimiss();
+        ToastUtility.showToast(msg);
+    }
+
+    @Override
+    public void showArrivefinal(String msg) {
         dimiss();
         ToastUtility.showToast(msg);
     }

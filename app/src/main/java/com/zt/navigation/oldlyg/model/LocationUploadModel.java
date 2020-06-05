@@ -15,18 +15,23 @@ import cn.faker.repaymodel.net.okhttp3.callback.HttpResponseCallback;
  * 定位上传
  */
 public class LocationUploadModel {
+    private boolean isRun = false;
     public void upload(String token, double longitude, double latitude,String address) {
+        if(isRun){
+            return;
+        }
+        isRun = true;
         LocationBean locationBean = new LocationBean(TokenManager.getUserId(),String.valueOf(longitude),String.valueOf(latitude),address);
 
         HttpHelper.post(Urls.UPDATELOCATION+"?token="+TokenManager.token, locationBean, new HttpResponseCallback() {
             @Override
             public void onSuccess(String data) {
-
+                isRun = false;
             }
 
             @Override
             public void onFailed(int status, String message) {
-
+                isRun = false;
             }
         });
     }

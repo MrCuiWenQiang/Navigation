@@ -78,51 +78,10 @@ public class MapPresenter extends BaseMVPPresenter<MapContract.View> implements 
 
     @Override
     public void updateLocation(double lan, double lon) {
-        if (!isPause){
-            return;
-        }
-        isPause = false;
         uploadModel.upload(TokenManager.token, lon, lan, null);
-        if (!isUpload && !isShowUpload) {
-
-            MapUtil.isHave(lan, lon, new HttpResponseCallback() {
-                @Override
-                public void onSuccess(String data) {
-                    if (Boolean.valueOf(data)){
-                        getView().showArrive("你已到达港区,点击上报");
-                        isShowUpload = true;
-                    }
-                    isPause = true;
-                }
-
-                @Override
-                public void onFailed(int status, String message) {
-                    isPause = true;
-                }
-            });
-        }
     }
 
-    @Override
-    public void uploadArrive() {
-        HashMap map = new HashMap<String, String>();
-        map.put("token", TokenManager.token);
-        map.put("userId", TokenManager.getUserId());
-        HttpHelper.get(Urls.ARRIVE, map, new HttpResponseCallback() {
-            @Override
-            public void onSuccess(String data) {
-                isUpload = true;
-                getView().uploadArriveSuccess("到港请求成功");
-            }
 
-            @Override
-            public void onFailed(int status, String message) {
-                isUpload = false;
-                isShowUpload = false;
-                getView().uploadArriveFail("到港请求失败");
-            }
-        });
-    }
 
     private RouteTask mRouteTask = null;
 

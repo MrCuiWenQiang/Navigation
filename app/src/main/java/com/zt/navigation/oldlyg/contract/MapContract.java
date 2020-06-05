@@ -14,19 +14,16 @@ public class MapContract {
 
         void showEndMapFile(String name);
 
-        void showArrive(String msg);
 
-        void uploadArriveSuccess(String msg);
 
-        void uploadArriveFail(String msg);
 
         void toGetHinder_Success(String msg);
+
     }
 
     public interface Presenter {
         void mapFile(Context context);
         void updateLocation(double lan,double lon);
-        void uploadArrive();
         void toGetHinder();
     }
 

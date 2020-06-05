@@ -6,6 +6,7 @@ import com.zt.navigation.oldlyg.contract.SettingContract;
 import com.zt.navigation.oldlyg.model.bean.UserBean;
 import com.zt.navigation.oldlyg.model.webbean.LoginBean;
 import com.zt.navigation.oldlyg.util.AppSettingUtil;
+import com.zt.navigation.oldlyg.util.MapUtil;
 import com.zt.navigation.oldlyg.util.TokenManager;
 
 import java.util.ArrayList;
@@ -74,6 +75,45 @@ public class SettingPresenter extends BaseMVPPresenter<SettingContract.View> imp
             @Override
             public void onFailed(int status, String message) {
                 getView().settingUser_Fail(message);
+            }
+        });
+    }
+
+
+    @Override
+    public void updateLocation(double lan, double lon) {
+
+            MapUtil.isHave(lan, lon, new HttpResponseCallback() {
+                @Override
+                public void onSuccess(String data) {
+                    if (Boolean.valueOf(data)){
+                        uploadArrive();
+                    }else {
+                        getView().showArrivefinal("未到达港区,不能上报");
+                    }
+                }
+
+                @Override
+                public void onFailed(int status, String message) {
+                    getView().showArrivefinal(message);
+                }
+            });
+    }
+
+    @Override
+    public void uploadArrive() {
+        HashMap map = new HashMap<String, String>();
+        map.put("token", TokenManager.token);
+        map.put("userId", TokenManager.getUserId());
+        HttpHelper.get(Urls.ARRIVE, map, new HttpResponseCallback() {
+            @Override
+            public void onSuccess(String data) {
+                getView().uploadArriveSuccess("到港请求成功");
+            }
+
+            @Override
+            public void onFailed(int status, String message) {
+                getView().uploadArriveFail("到港请求失败");
             }
         });
     }

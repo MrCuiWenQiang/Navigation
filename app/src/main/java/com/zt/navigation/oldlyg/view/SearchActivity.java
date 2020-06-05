@@ -99,12 +99,12 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
                 mPresenter. queryHistory();
             }
         });
-        addressAdapter.setOnItemClickListener(new BaseRecycleView.OnItemClickListener<String>() {
+        addressAdapter.setOnItemClickListener(new BaseRecycleView.OnItemClickListener<String[]>() {
             @Override
-            public void onItemClick(View view, String data, int position) {
+            public void onItemClick(View view, String[]data, int position) {
                 showLoading();
-                addressAdapter.setSuggestResults(null);
-                mPresenter.search(QUERY_TYPE_OK, data);
+                addressAdapter.setSuggestResults(null,null);
+                mPresenter.search(QUERY_TYPE_OK, data[0],data[1]);
             }
         });
 
@@ -133,6 +133,7 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
         mPresenter.queryHistory();
     }
 
+/*
     @Override
     public void search_Success(int type, List<FindResult> datas) {
          Map<String, Point> search_Data = new HashMap<>();
@@ -148,7 +149,8 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
 //            cityAddress.add(sb_Address.toString());
         }
 
- /*       while (iterator.hasNext()) {
+ */
+/*       while (iterator.hasNext()) {
             Feature feature = (Feature) iterator.next();
             Map<String, Object> attributes = feature.getAttributes();
             Geometry geometry = feature.getGeometry();
@@ -171,7 +173,8 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
             } else {
                 continue;
             }
-        }*/
+        }*//*
+
         if (type == QUERY_TYPE_ED) {
             mRvSearch.setVisibility(View.VISIBLE);
             //自动搜索
@@ -189,11 +192,12 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
             startActivityForResult(intent,requestCode);
         }
     }
+*/
 
     @Override
     public void search_Fail(int type, String text) {
         if (type == QUERY_TYPE_ED) {
-            addressAdapter.setSuggestResults(null);
+            addressAdapter.setSuggestResults(null,null);
         } else if (type == QUERY_TYPE_OK||type==QUERY_TYPE_OK_HIST) {
             dimiss();
             ToastUtility.showToast(text);
@@ -203,5 +207,25 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
     @Override
     public void queryHistory(List<HistoryBean> historyDatas) {
         historyAdapter.setHistoryDatas(historyDatas);
+    }
+
+    @Override
+    public void search_Success(int type, Map<String, Point> search_data, ArrayList<String> names, ArrayList<String> cityAddress) {
+        if (type == QUERY_TYPE_ED) {
+            mRvSearch.setVisibility(View.VISIBLE);
+            //自动搜索
+            addressAdapter.setSuggestResults(names,cityAddress);
+        } else if (type == QUERY_TYPE_OK||type==QUERY_TYPE_OK_HIST) {
+            //跳转到路线选择展示
+            Intent intent = new Intent();
+            Bundle bd = new Bundle();
+            bd.putSerializable(AddressListActivity.INTENT_KEY_SEARCH_DATA, (Serializable) search_data);
+            bd.putStringArrayList(AddressListActivity.INTENT_KEY_NAME,names);
+            bd.putStringArrayList(AddressListActivity.INTENT_KEY_CITY,cityAddress);
+            intent.putExtra("bundle",bd);
+            intent.setClass(getContext(),AddressListActivity.class);
+            dimiss();
+            startActivityForResult(intent,requestCode);
+        }
     }
 }

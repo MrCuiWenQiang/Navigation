@@ -96,6 +96,7 @@ public class NavigationMultiActivity extends BaseMVPAcivity<NavigationMultiContr
 
         mMapView = findViewById(R.id.mapview);
         lv_data = findViewById(R.id.lv_data);
+        tv_xs = findViewById(R.id.tv_xs);
         lv_data.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
         stopsAdapter = new StopsAdapter();
         lv_data.setAdapter(stopsAdapter);
