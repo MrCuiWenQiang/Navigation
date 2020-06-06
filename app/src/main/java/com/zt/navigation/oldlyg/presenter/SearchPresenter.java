@@ -86,50 +86,9 @@ public class SearchPresenter extends BaseMVPPresenter<SearchContract.View> imple
         getView().queryHistory(historyBeans);
     }
 
-    String[] fields = new String[]{"name", "ZGGSDM"};
-    //    String condition ;
-    int[] layerIds = new int[]{19, 20, 21, 22, 29, 33, 34, 36, 37, 38, 39, 64};
 
-    /*   @Override
-       public void search(final int type, String text) {
-           if (TextUtils.isEmpty(text)) {
-               getView().search_Fail(type, "请输入地点");
-               return;
-           }
-           // TODO: 2020/3/16 更换全图层查询  searchFromLayers
-           if (type == SearchActivity.QUERY_TYPE_OK) {
-               addHistory(text);
-               queryHistory();
-           }
-           final FindTask findTask = new FindTask(Urls.searchUrl);
-           final FindParameters findParameters = new FindParameters();
-           findParameters.setLayerIds(layerIds);
-           findParameters.setReturnGeometry(true); //允许返回几何图形
-           findParameters.setSearchText(text); // 设置查询关键字--必须设置
-           findParameters.setSearchFields(fields); // 设置查询字段的名称
-           DBThreadHelper.startThreadInPool(new DBThreadHelper.ThreadCallback<List<FindResult>>() {
 
-               @Override
-               protected List<FindResult> jobContent() throws Exception {
-                   return findTask.execute(findParameters);
-               }
 
-               @Override
-               protected void jobEnd(List<FindResult> findResults) {
-                   if (findResults != null) {
-                       if (findResults.size()>0) {
-                           getView().search_Success(type, findResults);
-                       } else {
-                           getView().search_Fail(type, "未查询到数据");
-                       }
-                   } else {
-   //                    getView().search_Fail(type, "查询失败");
-                       getView().search_Fail(type, "未查询到数据");
-                   }
-               }
-           });
-
-       }*/
     @Override
     public void search(final int type, String text) {
         search(type, text, null);
@@ -140,12 +99,12 @@ public class SearchPresenter extends BaseMVPPresenter<SearchContract.View> imple
             getView().search_Fail(type, "");
             return;
         }
-        String sql ;
+        String sql;
         if ((type == SearchActivity.QUERY_TYPE_OK || type == SearchActivity.QUERY_TYPE_OK_HIST)
                 && !TextUtils.isEmpty(gsmc)) {
-            sql = splitSQL(text,gsmc);
+            sql = splitSQL(text, gsmc);
 
-        }else {
+        } else {
             sql = splitSQL(text);
         }
         if (type == SearchActivity.QUERY_TYPE_OK) {
@@ -186,7 +145,7 @@ public class SearchPresenter extends BaseMVPPresenter<SearchContract.View> imple
                                 names.add(name);
                                 cityAddress.add(gsmc);
                                 // TODO: 2020/6/5 有键名重复的可能性  展示的时候将其变为独特，唯一
-                                if (search_Data.containsKey(name)){
+                                if (search_Data.containsKey(name)) {
                                     name = NominateUtil.contName(name);
                                 }
 
@@ -206,9 +165,78 @@ public class SearchPresenter extends BaseMVPPresenter<SearchContract.View> imple
         });
     }
 
-    //    String sql = "UNAME ='$name' AND GKZYQDM  = '$code'";
+    @Override
+    public void loadData() {
+        loadData(0, classs);
+    }
+
+    private final String[] classs = {"磅房", "堆场出口", "堆场入口"};
+
+    // TODO: 2020/6/5 有没有更好的做法？？？ 用实体?
+    private Map<String, List<String>> nameMap = new HashMap<>();
+    private Map<String, List<String>> gsmcMap = new HashMap<>();
+    private Map<String, List<Point>> pointMap = new HashMap<>();
+
+
+    // TODO: 2020/6/5 嵌套查询 预知查询时间肯定变长
+    private void loadData(int index, String[] classs) {
+        if (index >= classs.length) {
+            if (getView() != null) {
+                getView().loadData_success(classs, nameMap, gsmcMap, pointMap);
+            }
+            return;
+        }
+        String className = classs[index];
+        AsyncQueryTask asyncQueryTask = new AsyncQueryTask();
+        asyncQueryTask.execute(Urls.searchUrl + "/19", null, splitdataSQL(className));
+        asyncQueryTask.setOnReturnDataListener(new AsyncQueryTask.OnReturnDataListener() {
+            @Override
+            public void onReturnData(FeatureResult result) {
+                if (result != null) {
+                    Iterator<Object> iterator = result.iterator();
+                    if (iterator.hasNext()) {
+                        ArrayList<String> names = new ArrayList<>();
+                        ArrayList<String> cityAddress = new ArrayList<>();
+                        ArrayList<Point> points = new ArrayList<>();
+
+                        while (iterator.hasNext()) {
+                            Feature feature = (Feature) iterator.next();
+                            Map<String, Object> attributes = feature.getAttributes();
+                            Set<String> set = attributes.keySet();
+
+                            Geometry geometry = feature.getGeometry();
+                            String name = null;
+                            String gsmc = null;
+                            for (String key : set) {
+                                if (key.equals("NAME")) {
+                                    name = attributes.get(key) == null ? null : String.valueOf(attributes.get(key));
+
+                                } else if (key.equals("GSMC")) {
+                                    gsmc = attributes.get(key) == null ? null : String.valueOf(attributes.get(key));
+                                }
+                            }
+                            if (TextUtils.isEmpty(name) || TextUtils.isEmpty(gsmc)) {
+                                continue;
+                            } else {
+                                names.add(name);
+                                cityAddress.add(gsmc);
+                                points.add((Point) geometry);
+                            }
+                        }
+                        nameMap.put(className, names);
+                        gsmcMap.put(className, cityAddress);
+                        pointMap.put(className, points);
+                    }
+                }
+                loadData(index + 1, classs);
+            }
+        });
+    }
+
+
     String sql = "NAME like '%$name%' OR GSMC  like '%$gsmc%'";
     String sql_W = "NAME = '$name' And GSMC  = '$gsmc'";
+    String sql_data = "class = '$class' ";
 
     private String splitSQL(String value) {
         String o = sql.replace("$name", value);
@@ -216,9 +244,15 @@ public class SearchPresenter extends BaseMVPPresenter<SearchContract.View> imple
         return t;
     }
 
-    private String splitSQL(String value,String gsmc) {
+    private String splitSQL(String value, String gsmc) {
         String o = sql_W.replace("$name", value);
         String t = o.replace("$gsmc", gsmc);
         return t;
     }
+
+    private String splitdataSQL(String value) {
+        String o = sql_data.replace("$class", value);
+        return o;
+    }
+
 }

@@ -24,6 +24,7 @@ import com.zt.navigation.oldlyg.model.webbean.CarListBean;
 import com.zt.navigation.oldlyg.task.AsyncQueryTask;
 import com.zt.navigation.oldlyg.util.MapUtil;
 import com.zt.navigation.oldlyg.util.TokenManager;
+import com.zt.navigation.oldlyg.util.TpkTDTUtil;
 import com.zt.navigation.oldlyg.util.TpkUtil;
 import com.zt.navigation.oldlyg.util.UrlUtil;
 
@@ -48,8 +49,11 @@ public class MapPresenter extends BaseMVPPresenter<MapContract.View> implements 
         return TpkUtil.getPath();
     }
 
+    public String getTDTPath() {
+        return TpkTDTUtil.getPath();
+    }
     public void mapFile(Context context) {
-        if (TpkUtil.isHaveMap()) {
+        if (TpkUtil.isHaveMap()&&TpkTDTUtil.isHaveMap()) {
             return;
         }
         getView().showStartMapFile("解压离线地图包中...");
@@ -57,7 +61,13 @@ public class MapPresenter extends BaseMVPPresenter<MapContract.View> implements 
             @Override
             protected Integer jobContent() throws Exception {
                 FileUtility.copyFilesFromRaw(context, R.raw.lianyungang_dxt, TpkUtil.ZIPName, TpkUtil.getFathPath());
-                return TpkUtil.decode();
+                FileUtility.copyFilesFromRaw(context, R.raw.lianyungang_tdt, TpkTDTUtil.ZIPName, TpkTDTUtil.getFathPath());
+                if (TpkUtil.decode()==0&&TpkTDTUtil.decode()==0){
+                    return 0;
+                }else {
+                    return -1;
+                }
+
             }
 
             @Override

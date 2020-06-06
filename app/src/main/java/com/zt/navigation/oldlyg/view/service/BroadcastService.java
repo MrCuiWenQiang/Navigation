@@ -35,7 +35,7 @@ public class BroadcastService extends Service {
 
     BroadBean br = null;
 
-    private static final int PERIOD = 10 * 1000;
+    private static final int PERIOD = 30 * 1000;
     private static final int DELAY = 2000;
     private Timer mTimer;
     private TimerTask mTimerTask;

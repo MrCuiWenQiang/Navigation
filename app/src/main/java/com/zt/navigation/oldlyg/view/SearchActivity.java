@@ -21,6 +21,8 @@ import com.zt.navigation.oldlyg.model.bean.HistoryBean;
 import com.zt.navigation.oldlyg.presenter.SearchPresenter;
 import com.zt.navigation.oldlyg.view.adapter.AddressAdapter;
 import com.zt.navigation.oldlyg.view.adapter.HistoryAdapter;
+import com.zt.navigation.oldlyg.view.adapter.TreeEndAdapter;
+import com.zt.navigation.oldlyg.view.adapter.TreeTwoAdapter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,9 +42,11 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
     private TextView mTvquery;
     private RecyclerView mRvHistory;//历史记录
     private RecyclerView mRvSearch;//搜索列表
+    private RecyclerView rv_datas;//常用地点
 
     private HistoryAdapter historyAdapter;
     private AddressAdapter addressAdapter;
+    private TreeTwoAdapter treeTwoAdapter;
 
     public static final  int QUERY_TYPE_ED=0;//EDITTEXT动态输入
     public static final  int QUERY_TYPE_OK=1;//点击搜索
@@ -63,6 +67,7 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
         mTvquery = findViewById(R.id.tv_query);
         mRvHistory = findViewById(R.id.rv_history);
         mRvSearch = findViewById(R.id.rv_search);
+        rv_datas = findViewById(R.id.rv_datas);
     }
 
     @Override
@@ -74,6 +79,12 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
         mRvSearch.setLayoutManager(new LinearLayoutManager(getContext()));
         addressAdapter = new AddressAdapter();
         mRvSearch.setAdapter(addressAdapter);
+
+        rv_datas.setLayoutManager(new LinearLayoutManager(getContext()));
+        treeTwoAdapter = new TreeTwoAdapter();
+        rv_datas.setAdapter(treeTwoAdapter);
+
+        mPresenter.loadData();
     }
 
     @Override
@@ -129,70 +140,21 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
 
             }
         });
-
+        treeTwoAdapter.setOnItemListener(new TreeEndAdapter.OnItemListener() {
+            @Override
+            public void onClick(String name, Point point) {
+                Intent intent = new Intent(getContext(), NavigationActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(NavigationActivity.INTENT_KEY_END, point);
+                bundle.putString(NavigationActivity.INTENT_KEY_END_NAME, name);
+                intent.putExtra(NavigationActivity.BUNDLE_NAME, bundle);
+                startActivity(intent);
+            }
+        });
         mPresenter.queryHistory();
     }
 
-/*
-    @Override
-    public void search_Success(int type, List<FindResult> datas) {
-         Map<String, Point> search_Data = new HashMap<>();
-        ArrayList<String> names = new ArrayList<>();
-        ArrayList<String> cityAddress = new ArrayList<>();
-        for (FindResult item:datas) {
-            String name = item.getValue();
-            if (item.getGeometry() instanceof Point){
-                search_Data.put(name, (Point) item.getGeometry());
-                names.add(name);
-            }
 
-//            cityAddress.add(sb_Address.toString());
-        }
-
- */
-/*       while (iterator.hasNext()) {
-            Feature feature = (Feature) iterator.next();
-            Map<String, Object> attributes = feature.getAttributes();
-            Geometry geometry = feature.getGeometry();
-            Set<String> set = attributes.keySet();
-            int i = 0;
-            String name = null;
-            StringBuffer sb_Address= new StringBuffer();
-            for (String key : set) {
-                if ("NAME".equals(key)) {
-                    name = String.valueOf(attributes.get(key));
-                } else if (i == 7||i==8||i==9) {
-                    sb_Address.append(String.valueOf(attributes.get(key)));
-                }
-                i++;
-            }
-            if (geometry instanceof Point) {
-                search_Data.put(name, (Point) geometry);
-                names.add(name);
-                cityAddress.add(sb_Address.toString());
-            } else {
-                continue;
-            }
-        }*//*
-
-        if (type == QUERY_TYPE_ED) {
-            mRvSearch.setVisibility(View.VISIBLE);
-            //自动搜索
-            addressAdapter.setSuggestResults(names);
-        } else if (type == QUERY_TYPE_OK||type==QUERY_TYPE_OK_HIST) {
-            //跳转到路线选择展示
-            Intent intent = new Intent();
-            Bundle bd = new Bundle();
-            bd.putSerializable(AddressListActivity.INTENT_KEY_SEARCH_DATA, (Serializable) search_Data);
-            bd.putStringArrayList(AddressListActivity.INTENT_KEY_NAME,names);
-            bd.putStringArrayList(AddressListActivity.INTENT_KEY_CITY,cityAddress);
-            intent.putExtra("bundle",bd);
-            intent.setClass(getContext(),AddressListActivity.class);
-            dimiss();
-            startActivityForResult(intent,requestCode);
-        }
-    }
-*/
 
     @Override
     public void search_Fail(int type, String text) {
@@ -227,5 +189,10 @@ public class SearchActivity extends BaseMVPAcivity<SearchContract.View, SearchPr
             dimiss();
             startActivityForResult(intent,requestCode);
         }
+    }
+
+    @Override
+    public void loadData_success(String[] classs, Map<String, List<String>> nameMap, Map<String, List<String>> gsmcMap, Map<String, List<Point>> pointMap) {
+        treeTwoAdapter.setDatas(classs,nameMap,gsmcMap,pointMap);
     }
 }

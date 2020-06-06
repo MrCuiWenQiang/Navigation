@@ -18,6 +18,8 @@ public class SearchContract {
         void queryHistory(List<HistoryBean> historyDatas);
 
         void search_Success(int type, Map<String,Point> search_data, ArrayList<String> names, ArrayList<String> cityAddress);
+
+        void loadData_success(String[] classs, Map<String,List<String>> nameMap, Map<String,List<String>> gsmcMap, Map<String,List<Point>> pointMap);
     }
 
     public interface Presenter {
@@ -26,6 +28,7 @@ public class SearchContract {
         void cleanHistory();
 
         void queryHistory();
+        void loadData();
 
         void search(int type, String text);
     }

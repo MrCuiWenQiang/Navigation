@@ -204,6 +204,8 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     private void selectMap() {
         if (mapType = AppSettingUtil.getMapType()) {
             ArcGISLocalTiledLayer arcGISLocalTiledLayer = new ArcGISLocalTiledLayer("file://" + mPresenter.getPath());
+            ArcGISLocalTiledLayer topGISTiledMapServiceLayer = new ArcGISLocalTiledLayer("file://" + mPresenter.getTDTPath());
+            layerTopIndex = mMapView.addLayer(topGISTiledMapServiceLayer);
             layerIndex = mMapView.addLayer(arcGISLocalTiledLayer);
         } else {
             ArcGISDynamicMapServiceLayer arcGISTiledMapServiceLayer = new ArcGISDynamicMapServiceLayer(Urls.mapUrl);
