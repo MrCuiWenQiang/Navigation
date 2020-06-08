@@ -36,9 +36,7 @@ import cn.faker.repaymodel.util.db.DBThreadHelper;
 
 public class CarInfoPresenter extends BaseMVPPresenter<CarInfoContract.View> implements CarInfoContract.Presenter {
 
-    String[] fields = new String[]{"GKZYQDM"};
-    //    String condition ;
-    int[] layerIds = new int[]{64};
+
 
     @Override
     public void loadInfo(String id) {
@@ -63,55 +61,11 @@ public class CarInfoPresenter extends BaseMVPPresenter<CarInfoContract.View> imp
         });
     }
 
-/*   @Override
-    public void searchAddress(String name, String code) {
-        if (TextUtils.isEmpty(code)) {
-            getView().searchAddresss_Fail(0, "请输入地点");
-            return;
-        }
-        final FindTask findTask = new FindTask(Urls.searchUrl);
-        final FindParameters findParameters = new FindParameters();
-        findParameters.setLayerIds(layerIds);
-        findParameters.setReturnGeometry(true); //允许返回几何图形
-        findParameters.setSearchText(code); // 设置查询关键字--必须设置
-        findParameters.setSearchFields(fields); // 设置查询字段的名称
-        DBThreadHelper.startThreadInPool(new DBThreadHelper.ThreadCallback<List<FindResult>>() {
 
-            @Override
-            protected List<FindResult> jobContent() throws Exception {
-                return findTask.execute(findParameters);
-            }
-
-            @Override
-            protected void jobEnd(List<FindResult> findResults) {
-                if (findResults != null) {
-                    if (findResults.size()>0) {
-                        FindResult result = findResults.get(0);
-                        if (result.getGeometry() instanceof  Point){
-                            Point point = (Point) result.getGeometry();
-                            getView().searchAddresss_Success(1,name,point);
-                        }else  if (result.getGeometry() instanceof  Point){
-
-                        }else {
-                            getView().searchAddresss_Fail(1, "位置点不是标准数据");
-                        }
-                    } else {
-                        getView().searchAddresss_Fail(1, "未查询到数据");
-                    }
-                } else {
-//                    getView().search_Fail(type, "查询失败");
-                    getView().searchAddresss_Fail(1, "未查询到数据");
-                }
-            }
-        });
-
-    }*/
 
     public void searchAddress(List<String> names, List<String> codes) {
 
         AsyncQueryTask asyncQueryTask = new AsyncQueryTask();
-//        asyncQueryTask.execute(Urls.searchUrl + "/19", null, "name ='" + "4号磅" + "' AND GSBM  = '" + "191" + "'");
-//        asyncQueryTask.execute(Urls.searchUrl + "/64", null, splitSQL(names, codes));
         asyncQueryTask.execute(Urls.searchUrl + "/19", null, splitSQL(names, codes));
         asyncQueryTask.setOnReturnDataListener(new AsyncQueryTask.OnReturnDataListener() {
             @Override

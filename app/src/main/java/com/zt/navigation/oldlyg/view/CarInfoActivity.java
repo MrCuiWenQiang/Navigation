@@ -148,17 +148,17 @@ public class CarInfoActivity extends BaseMVPAcivity<CarInfoContract.View, CarInf
             List<String> names = new ArrayList<>();
             List<String> codes = new ArrayList<>();
 
-/*            for (CarInfoBean.Address item : data) {
+            for (CarInfoBean.Address item : data) {
                 names.add(item.getSTORAGE());
                 codes.add(item.getCODE_DEPARTMENT());
-            }*/
+            }
 
-           names.add("104场出口");
+       /*    names.add("104场出口");
             codes.add("77");
             names.add("802场出口");
             codes.add("77");
             names.add("802库出口");
-            codes.add("77");
+            codes.add("77");*/
 
             mPresenter.searchAddress(names, codes);
         }
