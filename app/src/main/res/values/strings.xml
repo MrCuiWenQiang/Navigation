@@ -3,6 +3,7 @@
 
     <string name="nai_hint">请驾驶车辆到规划路线</string>
     <string name="action">HDYKJL</string>
+    <string name="warnuser">登录代表同意协议</string>
     <array name="carheads">
         <item>冀</item>
         <item>辽</item>

@@ -53,7 +53,7 @@ public class MapPresenter extends BaseMVPPresenter<MapContract.View> implements 
         return TpkTDTUtil.getPath();
     }
     public void mapFile(Context context) {
-        if (TpkUtil.isHaveMap()&&TpkTDTUtil.isHaveMap()) {
+        if (TpkUtil.isHaveMap()) {
             return;
         }
         getView().showStartMapFile("解压离线地图包中...");
@@ -61,8 +61,8 @@ public class MapPresenter extends BaseMVPPresenter<MapContract.View> implements 
             @Override
             protected Integer jobContent() throws Exception {
                 FileUtility.copyFilesFromRaw(context, R.raw.lianyungang_dxt, TpkUtil.ZIPName, TpkUtil.getFathPath());
-                FileUtility.copyFilesFromRaw(context, R.raw.lianyungang_tdt, TpkTDTUtil.ZIPName, TpkTDTUtil.getFathPath());
-                if (TpkUtil.decode()==0&&TpkTDTUtil.decode()==0){
+//                FileUtility.copyFilesFromRaw(context, R.raw.lianyungang_tdt, TpkTDTUtil.ZIPName, TpkTDTUtil.getFathPath());
+                if (TpkUtil.decode()==0){
                     return 0;
                 }else {
                     return -1;

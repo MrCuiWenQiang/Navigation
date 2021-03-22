@@ -13,6 +13,10 @@ public class SettingContract {
         void uploadArriveSuccess(String msg);
         void uploadArriveFail(String msg);
         void showArrivefinal(String message);
+
+        void download_Success(String message);
+
+        void download_Fail(String message);
     }
 
     public interface Presenter {
@@ -22,6 +26,7 @@ public class SettingContract {
         void settingMapType(int index,boolean value);
         void showUsers();
         void settingUser(String sv);
+        void downloadMap();//下载天地图离线包
     }
 
     public interface Model {

@@ -131,6 +131,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
                 mGraphicsLayer.removeAll();
                 hiddenSegmentsLayer.removeAll();
                 tv_xs.setVisibility(View.GONE);
+                finish();
             }
         });
     }
@@ -151,6 +152,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
                     if (isNai) {
                         mPresenter.navigation(new Point(lon, lat), end_point, end_name);
                         mMapView.setExtent(new Point(lon, lat), 250);
+                        mMapView.setScale(mMapView.getMaxScale());
                     }
                     mPresenter.updateLocation(lat, lon);
                     MyApplication.startPoint = new Point(lon, lat);

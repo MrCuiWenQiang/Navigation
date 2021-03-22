@@ -23,13 +23,14 @@ public class LoginActivity extends BaseMVPAcivity<LoginContract.View, LoginPrese
     private String[] carHeads;
     @Override
     protected int getLayoutContentId() {
-        return R.layout.ac_login;
+        return R.layout.ac_login_new;
     }
 
     @Override
     protected void initContentView() {
         isShowBackButton(false);
         isShowToolView(false);
+        setStatusBar(R.color.app_states);
         changStatusIconCollor(false);
         editText = findViewById(R.id.editText);
         bt_login = findViewById(R.id.bt_login);
@@ -54,6 +55,7 @@ public class LoginActivity extends BaseMVPAcivity<LoginContract.View, LoginPrese
         if (v.getId()==R.id.bt_login){
             showLoading();
             mPresenter.login(getValue(tv_head),getValue(editText));
+//            login_Success("s");
         }else if (v.getId()==R.id.tv_head){
             showListDialog(carHeads, new DialogInterface.OnClickListener() {
                 @Override

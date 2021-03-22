@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="black">#313131</color>
+    <color name="black_t">#333333</color>
     <color name="bi_black">#505050</color>
     <color name="blackw">#000000</color>
     <color name="transparent">#00000000</color>

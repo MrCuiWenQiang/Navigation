@@ -42,4 +42,6 @@ public class Urls {
     public static final String MESSAGEHISTORY = UrlUtil.getNetUrl() + "/DhApi/api/MessageHistory";
     public static final String SELECT_TG = UrlUtil.getNetUrl() + "/DhApi/api/ReceiveMessage";
     public static final String LSERVICE = UrlUtil.getNetUrl() + "/DhApi/api/LService";
+
+    public static final String DOWNLOAD_TDT = UrlUtil.getNetUrl()+"/Dh/tdt.tpk";//天地图下载地址
 }

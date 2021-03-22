@@ -180,6 +180,7 @@ public class NavigationMultiActivity extends BaseMVPAcivity<NavigationMultiContr
                     if (isNai) {
                         mPresenter.navigation(new Point(lon, lat), end_point_now, end_name_now);
                         mMapView.setExtent(new Point(lon, lat), 250);
+                        mMapView.setScale(mMapView.getMaxScale());
                     }
                     mPresenter.updateLocation(lat, lon);
                     MyApplication.startPoint = new Point(lon, lat);

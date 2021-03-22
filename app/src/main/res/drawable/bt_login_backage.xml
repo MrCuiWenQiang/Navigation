@@ -2,24 +2,24 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="false">
         <shape>
-            <solid android:color="#5272F4" />
+            <solid android:color="@color/main_color" />
             <padding
-                android:bottom="10dp"
+                android:bottom="14dp"
                 android:left="50dp"
                 android:right="50dp"
-                android:top="10dp" />
-            <corners android:radius="10dp"/>
+                android:top="14dp" />
+            <corners android:radius="30dp"/>
         </shape>
     </item>
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="@color/ablue_b" />
+            <solid android:color="@color/main_color_fade" />
             <padding
-                android:bottom="10dp"
+                android:bottom="12dp"
                 android:left="50dp"
                 android:right="50dp"
-                android:top="10dp" />
-            <corners android:radius="10dp"/>
+                android:top="12dp" />
+            <corners android:radius="30dp"/>
         </shape>
     </item>
 </selector>

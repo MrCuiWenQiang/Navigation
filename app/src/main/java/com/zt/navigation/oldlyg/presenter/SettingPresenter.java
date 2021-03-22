@@ -8,7 +8,9 @@ import com.zt.navigation.oldlyg.model.webbean.LoginBean;
 import com.zt.navigation.oldlyg.util.AppSettingUtil;
 import com.zt.navigation.oldlyg.util.MapUtil;
 import com.zt.navigation.oldlyg.util.TokenManager;
+import com.zt.navigation.oldlyg.util.TpkTDTUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +18,8 @@ import java.util.List;
 import cn.faker.repaymodel.mvp.BaseMVPPresenter;
 import cn.faker.repaymodel.net.json.JsonUtil;
 import cn.faker.repaymodel.net.okhttp3.HttpHelper;
+import cn.faker.repaymodel.net.okhttp3.callback.DownLoadFileCallBack;
+import cn.faker.repaymodel.net.okhttp3.callback.DownloadBitmapCallback;
 import cn.faker.repaymodel.net.okhttp3.callback.HttpResponseCallback;
 import cn.faker.repaymodel.util.PreferencesUtility;
 
@@ -75,6 +79,26 @@ public class SettingPresenter extends BaseMVPPresenter<SettingContract.View> imp
             @Override
             public void onFailed(int status, String message) {
                 getView().settingUser_Fail(message);
+            }
+        });
+    }
+
+    @Override
+    public void downloadMap() {
+        HttpHelper.downloadFile(Urls.DOWNLOAD_TDT, new DownLoadFileCallBack(TpkTDTUtil.getFathPath(),TpkTDTUtil.name) {
+            @Override
+            public void onComplete(File file) {
+                getView().download_Success("下载成功");
+            }
+
+            @Override
+            public void onDownloading(int progress) {
+
+            }
+
+            @Override
+            public void onDownloadFail(int code) {
+                getView().download_Fail("下载失败");
             }
         });
     }

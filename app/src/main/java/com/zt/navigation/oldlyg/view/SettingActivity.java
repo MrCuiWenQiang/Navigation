@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
 import com.zt.navigation.oldlyg.MyApplication;
@@ -13,6 +15,7 @@ import com.zt.navigation.oldlyg.R;
 import com.zt.navigation.oldlyg.contract.SettingContract;
 import com.zt.navigation.oldlyg.presenter.SettingPresenter;
 import com.zt.navigation.oldlyg.util.AppSettingUtil;
+import com.zt.navigation.oldlyg.util.TpkTDTUtil;
 
 import cn.faker.repaymodel.mvp.BaseMVPAcivity;
 import cn.faker.repaymodel.util.ToastUtility;
@@ -24,8 +27,8 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
 
     private String[] item_one_name = new String[]{"路线模式", "地图模式"};
     private int[] one_ids = new int[]{R.id.one_1, R.id.one_2};
-    private String[] item_two_name = new String[]{"到达上报","车辆设置", "网络设置", "地图资源", "版本更新"};
-    private int[] two_ids = new int[]{R.id.ddupdate,R.id.two_1, R.id.two_2, R.id.two_3, R.id.two_4};
+    private String[] item_two_name = new String[]{"到达上报","车辆设置", "网络设置",  "版本更新"};
+    private int[] two_ids = new int[]{R.id.ddupdate,R.id.two_1, R.id.two_2, R.id.two_4};
     private String[] item_three_name = new String[]{"意见反馈", "使用说明"};
     private int[] three_ids = new int[]{R.id.three_1, R.id.three_2};
     private String[] item_one_describe;
@@ -95,18 +98,27 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
             showListDialog(mPresenter.maps, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    boolean select = which == 1;//fale 为小车
-                    mPresenter.settingMapType(which, select);
                     dialog.dismiss();
+                    boolean select = which == 1;
+                    if (select&&!TpkTDTUtil.isHaveMap()){
+                        showDialog("您手机还未有天地图离线包,是否下载?", new QMUIDialogAction.ActionListener() {
+                            @Override
+                            public void onClick(QMUIDialog dialog, int index) {
+                                dialog.dismiss();
+                                showLoading("正在下载,请稍等...");
+                                mPresenter.downloadMap();
+                            }
+                        });
+                    }else {
+                        mPresenter.settingMapType(which, select);
+                    }
                 }
             });
         } else if (id == R.id.two_1) {
             mPresenter.showUsers();
         } else if (id == R.id.two_2) {
             toAcitvity(AddressSettingActivity.class);
-        } else if (id == R.id.two_3) {
-            toAcitvity(MapFileActivity.class);
-        } else if (id == R.id.two_4) {
+        }  else if (id == R.id.two_4) {
             toAcitvity(VersionActivity.class);
         } else if (id == R.id.three_1) {
             toAcitvity(FeedbackActivity.class);
@@ -188,5 +200,17 @@ public class SettingActivity extends BaseMVPAcivity<SettingContract.View, Settin
     public void showArrivefinal(String msg) {
         dimiss();
         ToastUtility.showToast(msg);
+    }
+
+    @Override
+    public void download_Success(String message) {
+        dimiss();
+        ToastUtility.showToast(message);
+    }
+
+    @Override
+    public void download_Fail(String message) {
+        dimiss();
+        showDialog(message);
     }
 }

@@ -7,4 +7,8 @@
     <color name="win_start">#00529B</color>
     <color name="win_end">#B4005099</color>
     <color name="text_title_color">#4F4D5A</color>
+
+    <color name="main_color">#2F5BD4</color>
+    <color name="main_color_fade">#cc2f5bd4</color>
+    <color name="app_states">#3C68DF</color>
 </resources>

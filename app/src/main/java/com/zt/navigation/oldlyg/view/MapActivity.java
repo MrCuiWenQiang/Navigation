@@ -74,7 +74,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
     private GraphicsLayer hiddenSegmentsLayer;
 
     private LinearLayout ll_setting, ll_help, ll_listen,ll_message;
-    private LinearLayout ll_cat, ll_scan, ll_task_help;
+    private LinearLayout ll_cat, ll_scan;
     private LinearLayout ll_add, ll_subtract;
     private LinearLayout ll_local;
     private LinearLayout ll_task;
@@ -112,7 +112,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         ll_message = findViewById(R.id.ll_message);
         ll_cat = findViewById(R.id.ll_cat);
         ll_scan = findViewById(R.id.ll_scan);
-        ll_task_help = findViewById(R.id.ll_task_help);
+//        ll_task_help = findViewById(R.id.ll_task_help);
         ll_task = findViewById(R.id.ll_task);
 
     }
@@ -265,7 +265,7 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         ll_message.setOnClickListener(this);
         ll_cat.setOnClickListener(this);
         ll_scan.setOnClickListener(this);
-        ll_task_help.setOnClickListener(this);
+//        ll_task_help.setOnClickListener(this);
         mMapView.setOnSingleTapListener(new OnSingleTapListener() {
             @Override
             public void onSingleTap(float x, float y) {
@@ -387,7 +387,6 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
                     }
                 }
             });
-        } else if (id == R.id.ll_task_help) {
         }
 
        /* switch (v.getId()) {

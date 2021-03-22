@@ -131,7 +131,8 @@ public class MapUtil {
 
     //之前到达港区就直接返回坐标
     public synchronized static Point movenPoint(Point point) {
-        if (isHave) {
+        return point;
+      /*  if (isHave) {
             return point;
         }
         double minLength = -1;
@@ -147,7 +148,7 @@ public class MapUtil {
 
         }
         point.setXY(minPoint.getY(), minPoint.getX());
-        return point;
+        return point;*/
     }
 
 

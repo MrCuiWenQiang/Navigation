@@ -108,7 +108,7 @@ public class NavigationMultiPresenter extends BaseMVPPresenter<NavigationMultiCo
                             i++;
                         }*/
                         StopGraphic point2 = new StopGraphic(end);
-                        point1.setName(stopName);
+                        point2.setName(stopName);
 
                         rfaf.setFeatures( new Graphic[]{point1,point2});
                         rp.setReturnDirections(true);

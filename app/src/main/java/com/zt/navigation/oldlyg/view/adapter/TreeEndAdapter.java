@@ -38,7 +38,16 @@ public class TreeEndAdapter extends RecyclerView.Adapter<TreeEndAdapter.EndViewH
 
     @Override
     public void onBindViewHolder(@NonNull EndViewHolder titleViewHolder, int i) {
-        titleViewHolder.tv_title.setText(names.get(i));
+        String name = "";
+        if (gsmcs.get(i)!=null){
+            name=name+ gsmcs.get(i);
+        }
+        if (names.get(i)!=null){
+            name=name+"  "+ names.get(i);
+        }
+
+
+        titleViewHolder.tv_title.setText(name);
         titleViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
