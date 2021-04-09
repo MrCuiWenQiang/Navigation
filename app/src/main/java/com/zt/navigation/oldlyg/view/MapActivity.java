@@ -176,6 +176,8 @@ public class MapActivity extends BaseMVPAcivity<MapContract.View, MapPresenter> 
         filter.addAction(getResources().getString(R.string.action));
         registerReceiver(receiver, filter);
         mPresenter.toGetHinder();
+        mPresenter.queryhighWay();
+
     }
 
 

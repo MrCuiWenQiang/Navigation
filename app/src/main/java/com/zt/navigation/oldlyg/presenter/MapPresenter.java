@@ -6,6 +6,7 @@ import android.content.Context;
 import com.esri.core.geometry.Geometry;
 import com.esri.core.map.Feature;
 import com.esri.core.map.FeatureResult;
+import com.esri.core.map.Field;
 import com.esri.core.tasks.na.RouteTask;
 import com.esri.core.tasks.na.StopGraphic;
 import com.zt.navigation.oldlyg.Urls;
@@ -91,7 +92,27 @@ public class MapPresenter extends BaseMVPPresenter<MapContract.View> implements 
         uploadModel.upload(TokenManager.token, lon, lan, null);
     }
 
+    public void queryhighWay(){
+  /*      AsyncQueryTask asyncQueryTask = new AsyncQueryTask();
+        asyncQueryTask.execute(Urls.highwayUrl, null, "class='3'");
+        asyncQueryTask.setOnReturnDataListener(new AsyncQueryTask.OnReturnDataListener() {
+            @Override
+            public void onReturnData(FeatureResult result) {
+                if (result != null) {
+                    List<Field> fs = result.getFields();
+                    Iterator<Object> iterator = result.iterator();
+                    if (iterator.hasNext()) {
+                        while (iterator.hasNext()) {
+                            Feature feature = (Feature) iterator.next();
+                            Map<String, Object> attributes = featuroe.getAttributes();
+                            Set<String> set = attributes.keySet();
 
+                        }
+                    }
+                }
+            }
+        });*/
+    }
 
     private RouteTask mRouteTask = null;
 
@@ -134,7 +155,7 @@ public class MapPresenter extends BaseMVPPresenter<MapContract.View> implements 
                         if (getView()!=null){
                             getView().toGetHinder_Success(sb.toString());
                         }
-                    }
+                    };
                 }
             }
         });

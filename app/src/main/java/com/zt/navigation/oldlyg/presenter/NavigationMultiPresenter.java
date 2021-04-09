@@ -22,6 +22,7 @@ import com.zt.navigation.oldlyg.util.MapUtil;
 import com.zt.navigation.oldlyg.util.TokenManager;
 import com.zt.navigation.oldlyg.util.TpkUtil;
 import com.zt.navigation.oldlyg.util.UrlUtil;
+import com.zt.navigation.oldlyg.util.navigation.ThreadManager;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -264,45 +265,29 @@ public class NavigationMultiPresenter extends BaseMVPPresenter<NavigationMultiCo
                 } else {
                     Route curRoute = mResults.getRoutes().get(0);
                     List<RouteDirection> routeDirections = curRoute.getRoutingDirections();
-                    StringBuffer sb = new StringBuffer();
-                    double size = 0;
-                    if (routeDirections.size() > 0) {
-                        RouteDirection r0 = routeDirections.get(0);
-                        sb.append(r0.getText());
-                        size = r0.getLength();
-                    }
-                    if (routeDirections.size() > 1) {
-                        RouteDirection r1 = routeDirections.get(1);
-                        sb.append(",");
-                        sb.append(r1.getText());
-                        size += r1.getLength();
-                    }
-                    if (routeDirections.size() > 2) {
-                        RouteDirection r2 = routeDirections.get(2);
-                        sb.append(",");
-                        sb.append(r2.getText());
-                        size += r2.getLength();
-                    }
-                    DecimalFormat df = new DecimalFormat("#.00");
-//                    String str = df.format(size * 1000);
-                    String str = df.format(size);
-                    sb.append(",距离" + str);
-                    sb.append("米");
-                    double surplus = Double.valueOf(str);
-                    if (surplus <= 200&& getView()!=null) {
-                        getView().navigation_arrive(surplus);//距离目的地小于200米
-                    }
-                    // TODO: 2019/12/10 记录器
-                    FileWUtil.setAppendFile(sb.toString());
-                    if ( getView()!=null){
-                        getView().navigation_success(curRoute, sb.toString());
-                    }
+                    stopNavigation();
+                    navigateJob = new ThreadManager(routeDirections, new ThreadManager.OnNavigateListen() {
+                        @Override
+                        public void speak(String msg) {
+
+                            FileWUtil.setAppendFile(msg);
+                            if (getView() != null) {
+                                getView().navigation_success(curRoute, msg);
+                            }
+                        }
+                    });
+                    navigateJob.start();
                 }
             }
         });
     }
-
-
+    public void stopNavigation() {
+        if (navigateJob!=null){
+            navigateJob.exit();
+            navigateJob = null;
+        }
+    }
+    private ThreadManager navigateJob;
     private LocationUploadModel uploadModel = new LocationUploadModel();
 
     @Override

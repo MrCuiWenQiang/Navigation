@@ -8,7 +8,6 @@ import android.location.LocationListener;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -125,6 +124,7 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
             public void onExit() {
                 //关闭语音导航 定位模式；
                 isNai = false;
+                mPresenter.stopNavigation();
                 bdtts.stop();
                 rouceListInclude.clean();
                 naviceStatusInclude.off();
@@ -150,9 +150,10 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
                     double lat = location.getLatitude();//纬度
                     double lon = location.getLongitude();//经度
                     if (isNai) {
-                        mPresenter.navigation(new Point(lon, lat), end_point, end_name);
-                        mMapView.setExtent(new Point(lon, lat), 250);
-                        mMapView.setScale(mMapView.getMaxScale());
+                        // TODO: 2021/3/22 使用定时器 查询路线 不再使用定位器 
+//                        mPresenter.navigation(new Point(lon, lat), end_point, end_name);
+//                        mMapView.setExtent(new Point(lon, lat), 250);
+//                        mMapView.setScale(mMapView.getMaxScale());
                     }
                     mPresenter.updateLocation(lat, lon);
                     MyApplication.startPoint = new Point(lon, lat);
@@ -252,6 +253,10 @@ public class NavigationActivity extends BaseMVPAcivity<NavigationContract.View, 
     @Override
     public void navigation_success(Route route, String msg) {
         dimiss();
+
+        mMapView.setExtent(MyApplication.startPoint, 250);
+        mMapView.setScale(mMapView.getMaxScale());
+
         isNai = true;//防止开启的时候同时播报 故在此开启定位定时导航
         if (nav_id != -1) {
             hiddenSegmentsLayer.removeGraphic(nav_id);

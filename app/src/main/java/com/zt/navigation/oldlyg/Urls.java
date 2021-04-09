@@ -7,30 +7,28 @@ public class Urls {
 
 
     public static final String mapUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/路网服务/MapServer";//LYG测试
-//    public static final String mapUrl = "http://192.168.1.13:6080/arcgis/rest/services/lyg0508/MapServer";//LYG测试
 
     public static final String topMapUrl = UrlUtil.getGisUrl()+"/arcgis/rest/services/LYG_TDT0605/MapServer";//叠加图层 所有地图都要叠加
-//        public static final String topMapUrl = UrlUtil.getGisUrl()+"/arcgis/rest/services/lianyungang_tdt2/MapServer";//叠加图层 所有地图都要叠加
-//        public static final String topMapUrl = UrlUtil.getGisUrl()+"/arcgis/rest/services/lianyungang_tdt/MapServer";//叠加图层 所有地图都要叠加
-//    public static final String topMapUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/lyg_tdt529/MapServer";//叠加图层 所有地图都要叠加
 
-    public static final String searchUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/路网服务/MapServer";//LYG测试
-//      public static final String searchUrl="http://192.168.1.13:6080/arcgis/rest/services/lyg0508/MapServer";//JN
+    public static final String searchUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/路网服务/MapServer";
+//    public static final String searchUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/daohang1/MapServer";//测试2021年4月7日 16:05:25
 
     /**
      * 限速牌
      */
     public static final String xspmapUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/路网服务/MapServer/16";//LYG测试
 
+    public static final String highwayUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/路网服务/MapServer/10";//LYG测试
+
     /**
      * 障碍点数据 用于导航的时候加入
      */
     public static final String searchHinderUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/路网服务/MapServer/1";
-//    public static final String searchHinderUrl = "http://192.168.1.13:6080/arcgis/rest/services/lyg0508/MapServer/1";
 
-    public static final String maxNaviUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/bclw/NAServer/%E8%B7%AF%E5%BE%84";//大车
+    public static final String maxNaviUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/daohang1/NAServer/%E8%B7%AF%E5%BE%84";//大车
+//    public static final String maxNaviUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/bclw/NAServer/%E8%B7%AF%E5%BE%84";//大车
+
     public static final String minNaviUrl = UrlUtil.getGisUrl() + "/arcgis/rest/services/路网服务/NAServer/%E8%B7%AF%E5%BE%84";//小车
-//    public static final String mapNaviUrl ="http://192.168.1.13:6080/arcgis/rest/services/lyg0508/NAServer/%E8%B7%AF%E5%BE%84";//连云港路径
 
     public static final String URL = "http://www.boea.cn";
     public static final String CARLIST = UrlUtil.getNetUrl() + "/DhApi/api/DispatchList";

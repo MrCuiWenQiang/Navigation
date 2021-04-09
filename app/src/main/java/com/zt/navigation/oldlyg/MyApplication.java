@@ -19,7 +19,7 @@ public class MyApplication extends BasicApplication {
         ToastUtility.setToast(getApplicationContext());
         LogUtil.isShow = true;
         HttpHelper.init();
-        PreferencesUtility.setPreferencesUtility(getApplicationContext(),"Navigation");
+        PreferencesUtility.setPreferencesUtility(getApplicationContext(),"RouteCore");
 
         MultiDex.install(this);
     }

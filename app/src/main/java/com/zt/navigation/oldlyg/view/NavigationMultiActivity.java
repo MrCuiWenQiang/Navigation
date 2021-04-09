@@ -144,6 +144,7 @@ public class NavigationMultiActivity extends BaseMVPAcivity<NavigationMultiContr
                 //关闭语音导航 定位模式；
                 isNai = false;
                 bdtts.stop();
+                mPresenter.stopNavigation();
                 rouceListInclude.clean();
                 naviceStatusInclude.off();
                 mGraphicsLayer.removeAll();
@@ -177,11 +178,11 @@ public class NavigationMultiActivity extends BaseMVPAcivity<NavigationMultiContr
                     //这里做个判断是因为，可能因为gps信号问题，定位出来的经纬度不正常。
                     double lat = location.getLatitude();//纬度
                     double lon = location.getLongitude();//经度
-                    if (isNai) {
+         /*           if (isNai) {
                         mPresenter.navigation(new Point(lon, lat), end_point_now, end_name_now);
                         mMapView.setExtent(new Point(lon, lat), 250);
                         mMapView.setScale(mMapView.getMaxScale());
-                    }
+                    }*/
                     mPresenter.updateLocation(lat, lon);
                     MyApplication.startPoint = new Point(lon, lat);
                 }
@@ -284,6 +285,10 @@ public class NavigationMultiActivity extends BaseMVPAcivity<NavigationMultiContr
     @Override
     public void navigation_success(Route route, String msg) {
         dimiss();
+
+        mMapView.setExtent(MyApplication.startPoint, 250);
+        mMapView.setScale(mMapView.getMaxScale());
+
         isNai = true;//防止开启的时候同时播报 故在此开启定位定时导航
         if (nav_id != -1) {
             hiddenSegmentsLayer.removeGraphic(nav_id);

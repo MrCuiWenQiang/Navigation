@@ -74,11 +74,14 @@ public class AsyncQueryTask extends AsyncTask<Object, Void, FeatureResult> {
         //接口回调返回数据
         if (onReturnDataListener != null) {
             onReturnDataListener.onReturnData(result);
+        }else {
+//            onReturnDataListener.onError();
         }
     }
 
     public interface OnReturnDataListener {
         void onReturnData(FeatureResult result);
+//        void onError();
     }
 
     private OnReturnDataListener onReturnDataListener;

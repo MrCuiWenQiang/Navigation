@@ -19,9 +19,11 @@ import com.zt.navigation.oldlyg.model.LocationUploadModel;
 import com.zt.navigation.oldlyg.model.webbean.XSBean;
 import com.zt.navigation.oldlyg.task.AsyncQueryTask;
 import com.zt.navigation.oldlyg.util.MapUtil;
+import com.zt.navigation.oldlyg.util.navigation.RouteCore;
 import com.zt.navigation.oldlyg.util.TokenManager;
 import com.zt.navigation.oldlyg.util.TpkUtil;
 import com.zt.navigation.oldlyg.util.UrlUtil;
+import com.zt.navigation.oldlyg.util.navigation.ThreadManager;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
 
     private List<StopGraphic> hinderList = null;
     private StopGraphic[] hinderdatas = null;
+
 
     final SpatialReference wm = SpatialReference.create(4490);
 
@@ -112,6 +115,7 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
 
     /**
      * 计算距离最近的点
+     *
      * @param point
      */
     private void distance(Point point) {
@@ -126,7 +130,7 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
                 minPoint = item;
             }
         }
-        if (minPoint!=null&&getView()!=null){
+        if (minPoint != null && getView() != null) {
             getView().showXS(minPoint);
         }
     }
@@ -225,6 +229,7 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
         navigation(start, list, stopName);
     }
 
+
     public void navigation(Point start, List<Geometry> ends, String stopName) {
         findXS(start);
         if (mRouteTask == null) {
@@ -274,44 +279,23 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
                 } else {
                     Route curRoute = mResults.getRoutes().get(0);
                     List<RouteDirection> routeDirections = curRoute.getRoutingDirections();
-                    StringBuffer sb = new StringBuffer();
-                    double size = 0;
-                    if (routeDirections.size() > 0) {
-                        RouteDirection r0 = routeDirections.get(0);
-                        sb.append(r0.getText());
-                        size = r0.getLength();
-                    }
-                    if (routeDirections.size() > 1) {
-                        RouteDirection r1 = routeDirections.get(1);
-                        sb.append(",");
-                        sb.append(r1.getText());
-                        size += r1.getLength();
-                    }
-                    if (routeDirections.size() > 2) {
-                        RouteDirection r2 = routeDirections.get(2);
-                        sb.append(",");
-                        sb.append(r2.getText());
-                        size += r2.getLength();
-                    }
-                    DecimalFormat df = new DecimalFormat("#.00");
-//                    String str = df.format(size * 1000);
-                    String str = df.format(size);
-                    sb.append(",距离" + str);
-                    sb.append("米");
-                    double surplus = Double.valueOf(str);
-                    if (surplus <= 200&& getView()!=null) {
-                        getView().navigation_arrive(surplus);//距离目的地小于200米
-                    }
-                    // TODO: 2019/12/10 记录器
-                    FileWUtil.setAppendFile(sb.toString());
-                    if ( getView()!=null){
-                        getView().navigation_success(curRoute, sb.toString());
-                    }
+                    navigateJob = new ThreadManager(routeDirections, new ThreadManager.OnNavigateListen() {
+                        @Override
+                        public void speak(String msg) {
+
+                            FileWUtil.setAppendFile(msg);
+                            if (getView() != null) {
+                                getView().navigation_success(curRoute, msg);
+                            }
+                        }
+                    });
+                    navigateJob.start();
                 }
             }
         });
     }
 
+    private ThreadManager navigateJob;
 
     private LocationUploadModel uploadModel = new LocationUploadModel();
 
@@ -320,4 +304,9 @@ public class NavigationPresenter extends BaseMVPPresenter<NavigationContract.Vie
         uploadModel.upload(TokenManager.token, lon, lan, null);
     }
 
+    public void stopNavigation() {
+        if (navigateJob!=null){
+            navigateJob.exit();
+        }
+    }
 }
